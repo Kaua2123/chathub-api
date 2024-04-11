@@ -4,7 +4,6 @@ import {
   BeforeSave,
   Column,
   DataType,
-  //   DataType,
   Default,
   Model,
   PrimaryKey,
@@ -13,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import bcrypt from 'bcrypt';
 
-@Table
+@Table({ timestamps: true })
 export class User extends Model {
   @AutoIncrement
   @PrimaryKey
