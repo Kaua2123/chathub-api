@@ -1,7 +1,9 @@
 import {
   AllowNull,
   AutoIncrement,
+  BeforeSave,
   Column,
+  DataType,
   //   DataType,
   Default,
   Model,
@@ -9,6 +11,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import bcrypt from 'bcrypt';
 
 @Table
 export class User extends Model {
@@ -37,10 +40,21 @@ export class User extends Model {
 
   @AllowNull(false)
   @Default('')
-  @Column
+  @Column(DataType.VIRTUAL)
   password: string;
+
+  @AllowNull(false)
+  @Default('')
+  @Column
+  password_hash: string;
 
   @Default(true)
   @Column
   isOnline: boolean;
+
+  @BeforeSave
+  static hashPassword(user: User) {
+    const password = user.password;
+    if (password) user.password_hash = bcrypt.hashSync(password, 8);
+  }
 }
