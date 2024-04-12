@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { UserProtocol } from 'src/modules/users/contracts/user-protocol';
+import { USERS_REPOSITORY } from 'src/constants';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User)
+    @Inject(USERS_REPOSITORY)
     private userModel: typeof User,
   ) {}
 
