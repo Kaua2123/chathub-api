@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto';
 
@@ -9,6 +9,11 @@ export class UsersController {
   @Get('/')
   index() {
     return this.userService.index();
+  }
+
+  @Get('/:id')
+  show(@Param('id') id: number) {
+    return this.userService.show(id);
   }
 
   @Post('/post')

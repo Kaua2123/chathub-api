@@ -1,4 +1,4 @@
-import { Body, Inject, Injectable } from '@nestjs/common';
+import { Body, Param, Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { USERS_REPOSITORY } from 'src/constants';
 import { CreateUserDto } from './dto/create-user-dto';
@@ -16,7 +16,11 @@ export class UsersService implements UserRepository {
     return users;
   }
 
-  show() {}
+  async show(@Param() id: number) {
+    const user = await this.userModel.findByPk(id);
+
+    return user;
+  }
 
   async post(@Body() createUserDto: CreateUserDto) {
     const { id, name, username, email, password, isOnline } = createUserDto;
