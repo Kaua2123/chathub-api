@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Body, Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
-import { UserProtocol } from 'src/modules/users/contracts/user-protocol';
 import { USERS_REPOSITORY } from 'src/constants';
+import { CreateUserDto } from './dto/create-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -10,9 +10,23 @@ export class UsersService {
     private userModel: typeof User,
   ) {}
 
-  async index(): Promise<UserProtocol[]> {
-    const user = await this.userModel.findAll();
-    console.log(user);
+  async index() {
+    const users = await this.userModel.findAll();
+    return users;
+  }
+
+  async post(@Body() createUserDto: CreateUserDto) {
+    const { id, name, username, email, password, isOnline } = createUserDto;
+
+    const user = await this.userModel.create({
+      id,
+      name,
+      username,
+      email,
+      password,
+      isOnline,
+    });
+
     return user;
   }
 }

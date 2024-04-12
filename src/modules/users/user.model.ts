@@ -5,12 +5,13 @@ import {
   Column,
   DataType,
   Default,
+  Index,
   Model,
   PrimaryKey,
   Table,
   Unique,
 } from 'sequelize-typescript';
-import bcrypt from 'bcrypt';
+import { hash } from 'bcrypt';
 
 @Table({ timestamps: true })
 export class User extends Model {
@@ -18,7 +19,7 @@ export class User extends Model {
   @PrimaryKey
   @AllowNull(false)
   @Column
-  id: number;
+  declare id: number;
 
   @AllowNull(false)
   @Default('')
@@ -33,7 +34,7 @@ export class User extends Model {
 
   @AllowNull(false)
   @Default('')
-  @Unique
+  @Index({ unique: true })
   @Column
   email: string;
 
@@ -52,8 +53,9 @@ export class User extends Model {
   isOnline: boolean;
 
   @BeforeSave
-  static hashPassword(user: User) {
-    const password = user.password;
-    if (password) user.password_hash = bcrypt.hashSync(password, 8);
+  static async hashPassword(user: User) {
+    const password = user.getDataValue('password');
+    console.log(password);
+    if (password) user.password_hash = await hash(password, 8);
   }
 }
