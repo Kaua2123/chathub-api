@@ -13,13 +13,20 @@ export class UsersServiceRepository implements UsersRepository {
   async index(): Promise<User[]> {
     return this.userService.index();
   }
-  show(id: number): Promise<User> {
+
+  async show(id: number): Promise<User> {
     return this.userService.show(id);
   }
-  post(createUserDto: CreateUserDto): Promise<User> {
+
+  async post(createUserDto: CreateUserDto): Promise<User> {
     return this.userService.post(createUserDto);
   }
-  update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     return this.userService.update(id, updateUserDto);
+  }
+
+  async delete(id: number): Promise<void> {
+    return this.userService.delete(id);
   }
 }

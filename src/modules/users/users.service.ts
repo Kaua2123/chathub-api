@@ -99,5 +99,18 @@ export class UsersService implements UsersRepository {
       );
     }
   }
-  delete() {}
+  async delete(@Param('id') id: number) {
+    try {
+      if (!id) throw new HttpException('Missing ID', HttpStatus.BAD_REQUEST);
+
+      const user = await this.userModel.findByPk(id);
+
+      await user.destroy();
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

@@ -7,5 +7,5 @@ export abstract class UsersRepository {
   abstract show(id: number): Promise<User>;
   abstract post(createUserDto: CreateUserDto): Promise<User>;
   abstract update(id: number, updateUserDto: UpdateUserDto): Promise<User>;
-  //   abstract delete();
+  abstract delete(id: number): Promise<void>;
 }
