@@ -13,44 +13,60 @@ export class UsersService implements UserRepository {
   ) {}
 
   async index() {
-    const users = await this.userModel.findAll();
-    return users;
+    try {
+      const users = await this.userModel.findAll();
+      return users;
+    } catch (error) {
+      return error;
+    }
   }
 
   async show(@Param() id: number) {
-    const user = await this.userModel.findByPk(id);
+    try {
+      const user = await this.userModel.findByPk(id);
 
-    return user;
+      return user;
+    } catch (error) {
+      return error;
+    }
   }
 
   async post(@Body() createUserDto: CreateUserDto) {
-    const { id, name, username, email, password, isOnline } = createUserDto;
+    try {
+      const { id, name, username, email, password, isOnline } = createUserDto;
 
-    const user = await this.userModel.create({
-      id,
-      name,
-      username,
-      email,
-      password,
-      isOnline,
-    });
+      const user = await this.userModel.create({
+        id,
+        name,
+        username,
+        email,
+        password,
+        isOnline,
+      });
 
-    return user;
+      return user;
+    } catch (error) {
+      return error;
+    }
   }
 
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    const { name, username, email, password } = updateUserDto;
+    try {
+      const { name, username, email, password } = updateUserDto;
 
-    const user = await this.userModel.findByPk(id);
+      const user = await this.userModel.findByPk(id);
 
-    const updatedUser = await user.update({
-      name,
-      username,
-      email,
-      password,
-    });
+      const updatedUser = await user.update({
+        name,
+        username,
+        email,
+        password,
+      });
 
-    return updatedUser;
+      return updatedUser;
+    } catch (error) {
+      return error;
+    }
   }
   delete() {}
 }
