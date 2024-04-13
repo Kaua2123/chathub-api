@@ -1,4 +1,11 @@
-import { Body, Param, Inject, Injectable } from '@nestjs/common';
+import {
+  Body,
+  Param,
+  Inject,
+  Injectable,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { User } from './user.model';
 import { USERS_REPOSITORY } from 'src/constants';
 import { CreateUserDto } from './dto/create-user-dto';
@@ -15,9 +22,16 @@ export class UsersService implements UsersRepository {
   async index() {
     try {
       const users = await this.userModel.findAll();
+
+      if (!users)
+        throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+
       return users;
     } catch (error) {
-      return error;
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -25,9 +39,15 @@ export class UsersService implements UsersRepository {
     try {
       const user = await this.userModel.findByPk(id);
 
+      if (!user)
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+
       return user;
     } catch (error) {
-      return error;
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -46,7 +66,10 @@ export class UsersService implements UsersRepository {
 
       return user;
     } catch (error) {
-      return error;
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -54,7 +77,12 @@ export class UsersService implements UsersRepository {
     try {
       const { name, username, email, password } = updateUserDto;
 
+      if (!id) throw new HttpException('Missing ID', HttpStatus.BAD_REQUEST);
+
       const user = await this.userModel.findByPk(id);
+
+      if (!user)
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 
       const updatedUser = await user.update({
         name,
@@ -65,7 +93,10 @@ export class UsersService implements UsersRepository {
 
       return updatedUser;
     } catch (error) {
-      return error;
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   delete() {}
