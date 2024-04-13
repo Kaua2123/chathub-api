@@ -3,6 +3,7 @@ import { User } from './user.model';
 import { USERS_REPOSITORY } from 'src/constants';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UserRepository } from './repositories/users-repository';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 @Injectable()
 export class UsersService implements UserRepository {
@@ -37,6 +38,19 @@ export class UsersService implements UserRepository {
     return user;
   }
 
-  update() {}
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    const { name, username, email, password } = updateUserDto;
+
+    const user = await this.userModel.findByPk(id);
+
+    const updatedUser = await user.update({
+      name,
+      username,
+      email,
+      password,
+    });
+
+    return updatedUser;
+  }
   delete() {}
 }
