@@ -13,7 +13,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthRequired)
-      .exclude('user/post', 'user/:id')
+      .exclude('user/post', 'user')
       .forRoutes(UsersController);
   }
 }
