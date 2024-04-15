@@ -1,17 +1,13 @@
-import {
-  Body,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { Body, Inject, Injectable } from '@nestjs/common';
+
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
+import 'dotenv/config';
 import { AuthUserDto } from './dto/auth-user-dto';
 import { User } from '../users/user.model';
-import 'dotenv/config';
 import { USERS_REPOSITORY } from 'src/constants';
+import { PasswordsDoNotMatch } from '../users/errors/passwords-do-not-match';
 
 @Injectable()
 export class AuthService {
@@ -32,9 +28,7 @@ export class AuthService {
     const pass = await bcrypt.compare(password, user.password_hash);
     const { id } = user;
 
-    if (!pass) {
-      throw new HttpException('Passwords do not match', HttpStatus.BAD_REQUEST);
-    }
+    if (!pass) throw new PasswordsDoNotMatch();
 
     const token = jwt.sign({ id }, process.env.TOKEN_KEY);
     return { token };

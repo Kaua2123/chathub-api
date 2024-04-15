@@ -1,16 +1,11 @@
-import {
-  Body,
-  Param,
-  Inject,
-  Injectable,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Body, Param, Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
-import { USERS_REPOSITORY } from 'src/constants';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UsersRepository } from './repositories/users-repository';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { UserNotFound } from './errors/user-not-found';
+import { MissingId } from './errors/missing-id';
+import { USERS_REPOSITORY } from 'src/constants';
 
 @Injectable()
 export class UsersService implements UsersRepository {
@@ -22,88 +17,58 @@ export class UsersService implements UsersRepository {
   async index() {
     const users = await this.userModel.findAll();
 
-    if (!users)
-      throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+    if (!users) throw new UserNotFound();
 
     return users;
   }
 
   async show(@Param() id: number) {
-    try {
-      const user = await this.userModel.findByPk(id);
+    const user = await this.userModel.findByPk(id);
 
-      if (!user)
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    if (!user) throw new UserNotFound();
 
-      return user;
-    } catch (error) {
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return user;
   }
 
   async post(@Body() createUserDto: CreateUserDto) {
-    try {
-      const { id, name, username, email, password, isOnline } = createUserDto;
+    const { id, name, username, email, password, isOnline } = createUserDto;
 
-      const user = await this.userModel.create({
-        id,
-        name,
-        username,
-        email,
-        password,
-        isOnline,
-      });
+    const user = await this.userModel.create({
+      id,
+      name,
+      username,
+      email,
+      password,
+      isOnline,
+    });
 
-      return user;
-    } catch (error) {
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return user;
   }
 
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    try {
-      const { name, username, email, password } = updateUserDto;
+    const { name, username, email, password } = updateUserDto;
 
-      if (!id) throw new HttpException('Missing ID', HttpStatus.BAD_REQUEST);
+    if (!id) throw new MissingId();
 
-      const user = await this.userModel.findByPk(id);
+    const user = await this.userModel.findByPk(id);
 
-      if (!user)
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    if (!user) throw new UserNotFound();
 
-      const updatedUser = await user.update({
-        name,
-        username,
-        email,
-        password,
-      });
+    const updatedUser = await user.update({
+      name,
+      username,
+      email,
+      password,
+    });
 
-      return updatedUser;
-    } catch (error) {
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return updatedUser;
   }
+
   async delete(@Param('id') id: number) {
-    try {
-      if (!id) throw new HttpException('Missing ID', HttpStatus.BAD_REQUEST);
+    if (!id) throw new MissingId();
 
-      const user = await this.userModel.findByPk(id);
+    const user = await this.userModel.findByPk(id);
 
-      await user.destroy();
-    } catch (error) {
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    await user.destroy();
   }
 }

@@ -20,14 +20,14 @@ export class UsersController {
     return this.userService.index();
   }
 
-  @Get('/:id')
-  show(@Param('id') id: number) {
-    return this.userService.show(id);
-  }
-
   @Post('/post')
   post(@Body() createUserDto: CreateUserDto) {
     return this.userService.post(createUserDto);
+  }
+
+  @Get('/:id')
+  show(@Param('id') id: number) {
+    return this.userService.show(id);
   }
 
   @Put('/update/:id')
