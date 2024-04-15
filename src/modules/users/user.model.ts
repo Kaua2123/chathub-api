@@ -55,7 +55,6 @@ export class User extends Model {
   @BeforeSave
   static async hashPassword(user: User) {
     const password = user.getDataValue('password');
-    console.log(password);
     if (password) user.password_hash = await hash(password, 8);
   }
 }
