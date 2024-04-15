@@ -20,19 +20,12 @@ export class UsersService implements UsersRepository {
   ) {}
 
   async index() {
-    try {
-      const users = await this.userModel.findAll();
+    const users = await this.userModel.findAll();
 
-      if (!users)
-        throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
+    if (!users)
+      throw new HttpException('Users not found', HttpStatus.NOT_FOUND);
 
-      return users;
-    } catch (error) {
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return users;
   }
 
   async show(@Param() id: number) {
