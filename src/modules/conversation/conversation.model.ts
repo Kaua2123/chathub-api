@@ -1,8 +1,9 @@
-import { Model } from 'sequelize';
 import {
   AllowNull,
   AutoIncrement,
+  BelongsToMany,
   Column,
+  Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
@@ -14,19 +15,12 @@ export class Conversation extends Model {
   @PrimaryKey
   @AllowNull(false)
   @Column
-  declare id: number;
+  id: number;
 
-  @AllowNull(false)
-  @Column
-  declare participants: number[];
+  @BelongsToMany(() => User, {
+    through: 'UserConversation',
+    foreignKey: 'conversation_Id',
+    otherKey: 'user_Id',
+  })
+  participants: User[];
 }
-
-Conversation.belongsToMany(User, {
-  foreignKey: 'user_id',
-  through: 'UserConversation',
-});
-
-User.belongsToMany(Conversation, {
-  foreignKey: 'user_id',
-  through: 'UserConversation',
-});

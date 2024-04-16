@@ -19,7 +19,7 @@ export class User extends Model {
   @PrimaryKey
   @AllowNull(false)
   @Column
-  declare id: number;
+  id: number;
 
   @AllowNull(false)
   @Default('')
