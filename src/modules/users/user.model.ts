@@ -23,11 +23,6 @@ export class User extends Model {
 
   @AllowNull(false)
   @Default('')
-  @Column
-  name: string;
-
-  @AllowNull(false)
-  @Default('')
   @Unique
   @Column
   username: string;
@@ -50,7 +45,7 @@ export class User extends Model {
 
   @Default(true)
   @Column
-  isOnline: boolean;
+  is_online: boolean;
 
   @BeforeSave
   static async hashPassword(user: User) {

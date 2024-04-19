@@ -4,9 +4,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthRequired } from './middlewares/auth.required';
 import { UsersController } from './modules/users/users.controller';
 import { ConversationModule } from './modules/conversation/conversation.module';
+import { SocketModule } from './modules/socket/socket.module';
 
 @Module({
-  imports: [UsersModule, ConversationModule, AuthModule],
+  imports: [UsersModule, ConversationModule, AuthModule, SocketModule],
   controllers: [],
   providers: [],
 })
