@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '../../modules/users/user.model';
-import { Conversation } from '../../modules/conversation/conversation.model';
+import { Friend } from '../../modules/friends/friend.model';
 import * as constants from '../../constants';
 import 'dotenv/config';
 
@@ -19,15 +19,10 @@ export const databaseProviders = [
         password: DATABASE_PASSWORD,
         database: DATABASE,
       });
-      sequelize.addModels([User, Conversation]);
+      sequelize.addModels([User, Friend]);
 
-      Conversation.belongsToMany(User, {
-        through: 'UserConversation',
-      });
-
-      User.belongsToMany(Conversation, {
-        through: 'UserConversation',
-      });
+      User.hasMany(Friend);
+      Friend.belongsToMany(User, { through: 'users_friends' });
 
       await sequelize.sync();
       return sequelize;

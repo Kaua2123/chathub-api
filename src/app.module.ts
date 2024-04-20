@@ -3,11 +3,11 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthRequired } from './middlewares/auth.required';
 import { UsersController } from './modules/users/users.controller';
-import { ConversationModule } from './modules/conversation/conversation.module';
+// import { ConversationModule } from './modules/conversation/conversation.module';
 import { SocketModule } from './modules/socket/socket.module';
 
 @Module({
-  imports: [UsersModule, ConversationModule, AuthModule, SocketModule],
+  imports: [UsersModule, AuthModule, SocketModule],
   controllers: [],
   providers: [],
 })

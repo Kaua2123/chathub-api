@@ -20,9 +20,9 @@ export class SocketGateway
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('SocketGateway');
 
-  @SubscribeMessage('test') // client envia algo pro server, a partir disso, o server emite isso pra todos os users
+  @SubscribeMessage('msg') // client envia algo pro server, a partir disso, o server emite isso pra todos os users
   handleTest(socket: Socket, payload: string) {
-    this.server.emit('test', socket.id, payload);
+    this.server.emit('msg', payload, socket.id);
   }
 
   afterInit() {
@@ -33,7 +33,7 @@ export class SocketGateway
     this.logger.log('A user connected. user id:', client.id);
   }
 
-  handleDisconnect(client: any) {
+  handleDisconnect(client: Socket) {
     this.logger.log('A user disconnected. user id:', client.id);
   }
 }
