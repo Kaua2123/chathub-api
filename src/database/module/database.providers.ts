@@ -9,6 +9,7 @@ import { Group } from '../../modules/groups/group.model';
 import { Conversation } from '../../modules/conversation/conversation.model';
 import * as constants from '../../constants';
 import { Notification } from 'src/modules/notifications/notifications.model';
+import { Message } from 'src/modules/messages/message.model';
 
 const { DATABASE, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD } =
   process.env;
@@ -33,6 +34,7 @@ export const databaseProviders = [
         Group,
         Conversation,
         Notification,
+        Message,
       ]);
 
       User.hasMany(Friend);
@@ -85,6 +87,13 @@ export const databaseProviders = [
 
       Conversation.hasMany(Notification);
       Notification.belongsTo(Conversation, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+
+      User.hasMany(Message);
+      Message.belongsToMany(User, {
+        through: 'users_messages',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
