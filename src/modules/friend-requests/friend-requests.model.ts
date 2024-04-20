@@ -6,7 +6,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-@Table({ timestamps: true })
+@Table({ timestamps: true, modelName: 'friends_requests' })
 export class FriendRequests extends Model {
   @AutoIncrement
   @PrimaryKey

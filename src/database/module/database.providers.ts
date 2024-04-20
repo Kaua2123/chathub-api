@@ -1,7 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '../../modules/users/user.model';
 import { Friend } from '../../modules/friends/friend.model';
-import { FriendRequests } from '../../modules/friend_requests/friend_requests.model';
+import { FriendRequests } from '../../modules/friend-requests/friend-requests.model';
+import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import * as constants from '../../constants';
 import 'dotenv/config';
 
@@ -20,13 +21,25 @@ export const databaseProviders = [
         password: DATABASE_PASSWORD,
         database: DATABASE,
       });
-      sequelize.addModels([User, Friend, FriendRequests]);
+      sequelize.addModels([User, Friend, FriendRequests, BlockedUsers]);
 
       User.hasMany(Friend);
-      Friend.belongsToMany(User, { through: 'users_friends' });
+      Friend.belongsToMany(User, {
+        through: 'users_friends',
+        onDelete: 'CASCADE',
+      });
 
       User.hasMany(FriendRequests, { foreignKey: 'user_id' });
-      FriendRequests.belongsTo(FriendRequests, { foreignKey: 'user_id' });
+      FriendRequests.belongsTo(FriendRequests, {
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE',
+      });
+
+      User.hasMany(BlockedUsers);
+      BlockedUsers.belongsToMany(User, {
+        through: 'users_blocked_users',
+        onDelete: 'CASCADE',
+      });
 
       await sequelize.sync();
       return sequelize;
