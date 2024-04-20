@@ -70,6 +70,9 @@ export const databaseProviders = [
 
       Group.hasOne(Conversation);
       Conversation.belongsTo(Group, {
+        foreignKey: {
+          allowNull: true,
+        },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
