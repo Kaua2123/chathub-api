@@ -8,6 +8,7 @@ import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import { Group } from '../../modules/groups/group.model';
 import { Conversation } from '../../modules/conversation/conversation.model';
 import * as constants from '../../constants';
+import { Notification } from 'src/modules/notifications/notifications.model';
 
 const { DATABASE, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD } =
   process.env;
@@ -31,6 +32,7 @@ export const databaseProviders = [
         BlockedUsers,
         Group,
         Conversation,
+        Notification,
       ]);
 
       User.hasMany(Friend);
@@ -68,6 +70,18 @@ export const databaseProviders = [
 
       Group.hasOne(Conversation);
       Conversation.belongsTo(Group, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+
+      User.hasMany(Notification);
+      Notification.belongsTo(User, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+
+      Conversation.hasMany(Notification);
+      Notification.belongsTo(Conversation, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
