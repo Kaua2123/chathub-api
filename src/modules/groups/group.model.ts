@@ -1,4 +1,5 @@
 import {
+  AllowNull,
   AutoIncrement,
   Column,
   Model,
@@ -9,13 +10,16 @@ import {
 @Table({ timestamps: true })
 export class Group extends Model {
   @PrimaryKey
+  @AllowNull(false)
   @AutoIncrement
   @Column
   id: number;
 
+  @AllowNull(false)
   @Column
   name: string;
 
+  @AllowNull(false)
   @Column
   image: string;
 }

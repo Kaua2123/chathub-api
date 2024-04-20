@@ -1,4 +1,5 @@
 import {
+  AllowNull,
   AutoIncrement,
   Column,
   Model,
@@ -10,9 +11,11 @@ import {
 export class BlockedUsers extends Model {
   @PrimaryKey
   @AutoIncrement
+  @AllowNull(false)
   @Column
   id: number;
 
+  @AllowNull(false)
   @Column
   username: string;
 }

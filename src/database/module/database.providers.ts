@@ -6,6 +6,7 @@ import { Friend } from '../../modules/friends/friend.model';
 import { FriendRequests } from '../../modules/friend-requests/friend-requests.model';
 import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import { Group } from '../../modules/groups/group.model';
+import { Conversation } from '../../modules/conversation/conversation.model';
 import * as constants from '../../constants';
 
 const { DATABASE, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD } =
@@ -23,7 +24,14 @@ export const databaseProviders = [
         password: DATABASE_PASSWORD,
         database: DATABASE,
       });
-      sequelize.addModels([User, Friend, FriendRequests, BlockedUsers, Group]);
+      sequelize.addModels([
+        User,
+        Friend,
+        FriendRequests,
+        BlockedUsers,
+        Group,
+        Conversation,
+      ]);
 
       User.hasMany(Friend);
       Friend.belongsToMany(User, {
@@ -32,9 +40,8 @@ export const databaseProviders = [
         onUpdate: 'CASCADE',
       });
 
-      User.hasMany(FriendRequests, { foreignKey: 'user_id' });
+      User.hasMany(FriendRequests);
       FriendRequests.belongsTo(FriendRequests, {
-        foreignKey: 'user_id',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
@@ -49,6 +56,18 @@ export const databaseProviders = [
       User.hasMany(Group);
       Group.belongsToMany(User, {
         through: 'users_groups',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+
+      User.hasMany(Conversation);
+      Conversation.belongsTo(User, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
+
+      Group.hasOne(Conversation);
+      Conversation.belongsTo(Group, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
