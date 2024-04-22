@@ -7,4 +7,4 @@ import { DatabaseModule } from '../../database/module/database.module';
   providers: [],
   exports: [],
 })
-export class BlockedUsers {}
+export class BlockedUsersModule {}

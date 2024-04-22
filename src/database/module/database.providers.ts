@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import 'dotenv/config';
+import * as constants from '../../constants';
 
 import { User } from '../../modules/users/user.model';
 import { Friend } from '../../modules/friends/friend.model';
@@ -7,9 +8,8 @@ import { FriendRequests } from '../../modules/friend-requests/friend-requests.mo
 import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import { Group } from '../../modules/groups/group.model';
 import { Conversation } from '../../modules/conversation/conversation.model';
-import * as constants from '../../constants';
-import { Notification } from 'src/modules/notifications/notifications.model';
-import { Message } from 'src/modules/messages/message.model';
+import { Notification } from '../../modules/notifications/notifications.model';
+import { Message } from '../../modules/messages/message.model';
 
 const { DATABASE, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD } =
   process.env;
