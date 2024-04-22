@@ -4,7 +4,7 @@ import * as constants from '../../constants';
 
 import { User } from '../../modules/users/user.model';
 import { Friend } from '../../modules/friends/friend.model';
-import { FriendRequests } from '../../modules/friend-requests/friend-requests.model';
+import { FriendRequest } from '../../modules/friend-requests/friend-request.model';
 import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import { Group } from '../../modules/groups/group.model';
 import { Conversation } from '../../modules/conversation/conversation.model';
@@ -29,7 +29,7 @@ export const databaseProviders = [
       sequelize.addModels([
         User,
         Friend,
-        FriendRequests,
+        FriendRequest,
         BlockedUsers,
         Group,
         Conversation,
@@ -44,10 +44,16 @@ export const databaseProviders = [
         onUpdate: 'CASCADE',
       });
 
-      User.hasMany(FriendRequests);
-      FriendRequests.belongsTo(User, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
+      User.belongsToMany(User, {
+        as: 'sender',
+        through: FriendRequest,
+        foreignKey: 'senderId',
+      });
+
+      User.belongsToMany(User, {
+        as: 'receiver',
+        through: FriendRequest,
+        foreignKey: 'receiverId',
       });
 
       User.hasMany(BlockedUsers);

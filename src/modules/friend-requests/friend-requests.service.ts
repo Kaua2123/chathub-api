@@ -1,24 +1,30 @@
-import { Inject, Injectable, Param } from '@nestjs/common';
+import { Body, Inject, Injectable, Param } from '@nestjs/common';
 import { FRIEND_REQUESTS_REPOSITORY, USERS_REPOSITORY } from 'src/constants';
-import { FriendRequests } from './friend-requests.model';
+import { FriendRequest } from './friend-request.model';
 import { User } from '../users/user.model';
+import { SendFriendRequestDto } from './dto/send-friend-request-dto';
 
 @Injectable()
 export class FriendRequestsService {
   constructor(
     @Inject(FRIEND_REQUESTS_REPOSITORY)
-    private friendRequestModel: typeof FriendRequests,
+    private friendRequestModel: typeof FriendRequest,
     @Inject(USERS_REPOSITORY)
     private userModel: typeof User,
   ) {}
 
-  async index() {
+  async index(@Param('user_id') user_id) {
     const friendRequests = await this.friendRequestModel.findAll({
-      attributes: ['id', 'UserId', 'message', 'createdAt', 'updatedAt'],
-      include: {
-        model: User,
-        attributes: ['id', 'username'],
-      },
+      attributes: [
+        'id',
+        'senderId',
+        'receiverId',
+        'message',
+        'status',
+        'createdAt',
+        'updatedAt',
+      ],
+      where: { receiverId: user_id },
     });
 
     return friendRequests;
@@ -30,16 +36,17 @@ export class FriendRequestsService {
     return friendRequest;
   }
 
-  async create(@Param('user_id') user_id: number) {
-    // preciso do id do usuario que enviou.
+  async create(@Body() sendFriendRequestDto: SendFriendRequestDto) {
+    const { id, senderId, receiverId } = sendFriendRequestDto;
 
-    const user = await this.userModel.findByPk(user_id);
-
-    const newFriendRequest = await this.friendRequestModel.create({
-      message: `${user.username} te enviou um pedido de amizade`,
-      UserId: user.id,
+    const friendRequest = await this.friendRequestModel.create({
+      id,
+      senderId,
+      receiverId,
+      status: 'Pending',
+      message: 'Você recebeu um pedido de amizade',
     });
 
-    return newFriendRequest;
+    return friendRequest;
   }
 }

@@ -32,7 +32,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthRequired)
-      .exclude('user/post', 'user')
+      .exclude('user/create', 'user')
       .forRoutes(UsersController);
   }
 }
