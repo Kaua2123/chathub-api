@@ -45,7 +45,7 @@ export const databaseProviders = [
       });
 
       User.hasMany(FriendRequests);
-      FriendRequests.belongsTo(FriendRequests, {
+      FriendRequests.belongsTo(User, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });

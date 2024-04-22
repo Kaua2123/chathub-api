@@ -30,7 +30,7 @@ export class UsersService implements UsersRepository {
     return user;
   }
 
-  async post(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     const { id, name, username, email, password, isOnline } = createUserDto;
 
     const user = await this.userModel.create({

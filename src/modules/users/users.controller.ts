@@ -20,9 +20,9 @@ export class UsersController {
     return this.userService.index();
   }
 
-  @Post('/post')
+  @Post('/create')
   async post(@Body() createUserDto: CreateUserDto) {
-    return this.userService.post(createUserDto);
+    return this.userService.create(createUserDto);
   }
 
   @Get('/:id')

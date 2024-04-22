@@ -9,6 +9,6 @@ import { UniqueConstraint } from 'src/custom-decorators/Unique';
   imports: [DatabaseModule],
   controllers: [UsersController],
   providers: [UsersService, ...usersProviders, UniqueConstraint],
-  exports: [UsersService],
+  exports: [UsersService, ...usersProviders],
 })
 export class UsersModule {}

@@ -18,8 +18,8 @@ export class UsersServiceRepository implements UsersRepository {
     return this.userService.show(id);
   }
 
-  async post(createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.post(createUserDto);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return this.userService.create(createUserDto);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {

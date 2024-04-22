@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { FriendRequestsService } from './friend-requests.service';
 
 @Controller('/friendRequest')
@@ -7,11 +7,16 @@ export class FriendRequestsController {
 
   @Get('/')
   async index() {
-    await this.friendRequestsService.index();
+    return this.friendRequestsService.index();
   }
 
-  @Get('/')
+  @Get('/:id')
   async show(@Param('id') id: number) {
-    await this.friendRequestsService.show(id);
+    return this.friendRequestsService.show(id);
+  }
+
+  @Post('/create/:user_id')
+  async sendFriendRequest(@Param('user_id') user_id: number) {
+    return this.friendRequestsService.create(user_id);
   }
 }
