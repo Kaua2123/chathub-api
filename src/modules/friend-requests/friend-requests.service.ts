@@ -1,9 +1,11 @@
 import { Body, Inject, Injectable, Param } from '@nestjs/common';
+
 import {
   FRIENDS_REPOSITORY,
   FRIEND_REQUESTS_REPOSITORY,
   USERS_REPOSITORY,
 } from 'src/constants';
+
 import { FriendRequest } from './friend-request.model';
 import { SendFriendRequestDto } from './dto/send-friend-request-dto';
 import { Friend } from '../friends/friend.model';

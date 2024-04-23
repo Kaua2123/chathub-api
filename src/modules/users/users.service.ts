@@ -1,14 +1,13 @@
 import { Body, Param, Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user-dto';
-import { UsersRepository } from './repositories/users-repository';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { UserNotFound } from './errors/user-not-found';
 import { MissingId } from './errors/missing-id';
 import { USERS_REPOSITORY } from 'src/constants';
 
 @Injectable()
-export class UsersService implements UsersRepository {
+export class UsersService {
   constructor(
     @Inject(USERS_REPOSITORY)
     private userModel: typeof User,

@@ -7,36 +7,36 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { UsersRepository } from './repositories/users-repository';
 
 @Controller('/user')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   @Get('/')
   async index() {
-    return this.userService.index();
+    return this.usersRepository.index();
   }
 
   @Post('/create')
   async post(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    return this.usersRepository.create(createUserDto);
   }
 
   @Get('/:id')
   async show(@Param('id') id: number) {
-    return this.userService.show(id);
+    return this.usersRepository.show(id);
   }
 
   @Put('/update/:id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+    return this.usersRepository.update(id, updateUserDto);
   }
 
   @Delete('/delete/:id')
   async delete(@Param('id') id: number) {
-    return this.userService.delete(id);
+    return this.usersRepository.delete(id);
   }
 }
