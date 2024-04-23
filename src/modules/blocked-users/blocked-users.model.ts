@@ -2,6 +2,7 @@ import {
   AllowNull,
   AutoIncrement,
   Column,
+  Default,
   Model,
   PrimaryKey,
   Table,
@@ -16,6 +17,7 @@ export class BlockedUsers extends Model {
   id: number;
 
   @AllowNull(false)
+  @Default('')
   @Column
   username: string;
 }

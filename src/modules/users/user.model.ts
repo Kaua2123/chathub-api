@@ -35,6 +35,11 @@ export class User extends Model {
 
   @AllowNull(false)
   @Default('')
+  @Column
+  image: string;
+
+  @AllowNull(false)
+  @Default('')
   @Column(DataType.VIRTUAL)
   password: string;
 

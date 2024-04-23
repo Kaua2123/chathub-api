@@ -2,6 +2,7 @@ import {
   AllowNull,
   AutoIncrement,
   Column,
+  Default,
   Model,
   PrimaryKey,
   Table,
@@ -16,10 +17,12 @@ export class Group extends Model {
   id: number;
 
   @AllowNull(false)
+  @Default('')
   @Column
   name: string;
 
   @AllowNull(false)
+  @Default('')
   @Column
   image: string;
 }

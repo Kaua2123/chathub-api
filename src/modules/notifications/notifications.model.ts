@@ -5,6 +5,7 @@ import {
   PrimaryKey,
   AutoIncrement,
   AllowNull,
+  Default,
 } from 'sequelize-typescript';
 
 @Table({ timestamps: true })
@@ -16,10 +17,12 @@ export class Notification extends Model {
   id: number;
 
   @AllowNull(false)
+  @Default('')
   @Column
   content: string;
 
   @AllowNull(false)
+  @Default('')
   @Column
   type: string;
 }
