@@ -11,6 +11,10 @@ import { SendFriendRequestDto } from './dto/send-friend-request-dto';
 import { Friend } from '../friends/friend.model';
 import { User } from '../users/user.model';
 
+import { MissingId } from '../users/errors/missing-id';
+import { FriendRequestNotFound } from './errors/friend-request-not-found';
+import { UserNotFound } from '../users/errors/user-not-found';
+
 @Injectable()
 export class FriendRequestsService {
   constructor(
@@ -23,6 +27,8 @@ export class FriendRequestsService {
   ) {}
 
   async listUserFriendRequests(@Param('user_id') user_id: number) {
+    if (!user_id) throw new MissingId();
+
     const friendRequests = await this.friendRequestModel.findAll({
       attributes: [
         'id',
@@ -36,10 +42,14 @@ export class FriendRequestsService {
       where: { receiverId: user_id },
     });
 
+    if (!friendRequests) throw new FriendRequestNotFound();
+
     return friendRequests;
   }
 
   async show(@Param('id') id: number) {
+    if (!id) throw new MissingId();
+
     const friendRequest = await this.friendRequestModel.findByPk(id, {
       attributes: [
         'id',
@@ -52,13 +62,19 @@ export class FriendRequestsService {
       ],
     });
 
+    if (!friendRequest) throw new FriendRequestNotFound();
+
     return friendRequest;
   }
 
   async create(@Body() sendFriendRequestDto: SendFriendRequestDto) {
     const { id, senderId, receiverId } = sendFriendRequestDto;
 
+    if (!id) throw new MissingId();
+
     const user = await this.userModel.findByPk(senderId);
+
+    if (!user) throw new UserNotFound();
 
     const friendRequest = await this.friendRequestModel.create({
       id,
@@ -71,7 +87,10 @@ export class FriendRequestsService {
   }
 
   async rejectFriendRequest(@Param('id') id: number) {
+    if (!id) throw new MissingId();
+
     const friendRequest = await this.friendRequestModel.findByPk(id);
+    if (!friendRequest) throw new FriendRequestNotFound();
 
     await friendRequest.destroy();
 
@@ -81,7 +100,10 @@ export class FriendRequestsService {
   }
 
   async acceptFriendRequest(@Param('id') id: number) {
+    if (!id) throw new MissingId();
+
     const friendRequest = await this.friendRequestModel.findByPk(id);
+    if (!friendRequest) throw new FriendRequestNotFound();
 
     await friendRequest.update(
       { status: 'Accepted' },
@@ -89,6 +111,9 @@ export class FriendRequestsService {
     );
 
     const userWhoSent = await this.userModel.findByPk(friendRequest.senderId);
+
+    if (!userWhoSent) throw new UserNotFound();
+
     const { username, is_online } = userWhoSent;
 
     const newFriend = await this.friendsModel.create({
