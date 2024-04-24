@@ -4,7 +4,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthRequired } from './middlewares/auth.required';
 import { UsersController } from './modules/users/users.controller';
 import { SocketModule } from './modules/socket/socket.module';
-import { FriendsModule } from './modules/friends/friends.module';
 import { FriendRequestsModule } from './modules/friend-requests/friend-requests.module';
 import { GroupModule } from './modules/groups/groups.module';
 import { BlockedUsersModule } from './modules/blocked-users/blocked-users.module';
@@ -17,7 +16,6 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     UsersModule,
     AuthModule,
     SocketModule,
-    FriendsModule,
     FriendRequestsModule,
     GroupModule,
     BlockedUsersModule,

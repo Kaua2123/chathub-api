@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { FriendRequestsRepository } from './friend-requests-repository';
 import { FriendRequest } from '../friend-request.model';
 import { SendFriendRequestDto } from '../dto/send-friend-request-dto';
-import { Friend } from 'src/modules/friends/friend.model';
 import { FriendRequestsService } from '../friend-requests.service';
 
 @Injectable()
@@ -25,9 +24,7 @@ export class FriendRequestsServiceRepository
     return this.friendRequestsService.create(sendFriendRequestDto);
   }
 
-  async acceptFriendRequest(
-    id: number,
-  ): Promise<{ message: string; newFriend: Friend }> {
+  async acceptFriendRequest(id: number): Promise<{ message: string }> {
     return this.friendRequestsService.acceptFriendRequest(id);
   }
 

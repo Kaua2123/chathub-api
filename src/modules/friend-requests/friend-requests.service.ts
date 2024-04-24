@@ -1,14 +1,9 @@
 import { Body, Inject, Injectable, Param } from '@nestjs/common';
 
-import {
-  FRIENDS_REPOSITORY,
-  FRIEND_REQUESTS_REPOSITORY,
-  USERS_REPOSITORY,
-} from 'src/constants';
+import { FRIEND_REQUESTS_REPOSITORY, USERS_REPOSITORY } from 'src/constants';
 
 import { FriendRequest } from './friend-request.model';
 import { SendFriendRequestDto } from './dto/send-friend-request-dto';
-import { Friend } from '../friends/friend.model';
 import { User } from '../users/user.model';
 
 import { MissingId } from '../users/errors/missing-id';
@@ -20,8 +15,6 @@ export class FriendRequestsService {
   constructor(
     @Inject(FRIEND_REQUESTS_REPOSITORY)
     private friendRequestModel: typeof FriendRequest,
-    @Inject(FRIENDS_REPOSITORY)
-    private friendsModel: typeof Friend,
     @Inject(USERS_REPOSITORY)
     private userModel: typeof User,
   ) {}
@@ -70,8 +63,6 @@ export class FriendRequestsService {
   async create(@Body() sendFriendRequestDto: SendFriendRequestDto) {
     const { id, senderId, receiverId } = sendFriendRequestDto;
 
-    if (!id) throw new MissingId();
-
     const user = await this.userModel.findByPk(senderId);
 
     if (!user) throw new UserNotFound();
@@ -105,25 +96,16 @@ export class FriendRequestsService {
     const friendRequest = await this.friendRequestModel.findByPk(id);
     if (!friendRequest) throw new FriendRequestNotFound();
 
-    await friendRequest.update(
-      { status: 'Accepted' },
-      { where: { status: 'Pending' } },
-    );
-
     const userWhoSent = await this.userModel.findByPk(friendRequest.senderId);
 
     if (!userWhoSent) throw new UserNotFound();
 
-    const { username, is_online } = userWhoSent;
+    await userWhoSent.$add('friends', friendRequest.receiverId);
 
-    const newFriend = await this.friendsModel.create({
-      username,
-      is_online,
-    });
+    await friendRequest.destroy();
 
     return {
-      message: `Pedido de amizade aceito. Você e ${username} agora são amigos.`,
-      newFriend,
+      message: `Pedido de amizade aceito. Você e ${userWhoSent.username} agora são amigos.`,
     };
   }
 }

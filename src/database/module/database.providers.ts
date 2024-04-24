@@ -3,7 +3,6 @@ import 'dotenv/config';
 import * as constants from '../../constants';
 
 import { User } from '../../modules/users/user.model';
-import { Friend } from '../../modules/friends/friend.model';
 import { FriendRequest } from '../../modules/friend-requests/friend-request.model';
 import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import { Group } from '../../modules/groups/group.model';
@@ -28,7 +27,6 @@ export const databaseProviders = [
       });
       sequelize.addModels([
         User,
-        Friend,
         FriendRequest,
         BlockedUsers,
         Group,
@@ -37,11 +35,19 @@ export const databaseProviders = [
         Message,
       ]);
 
-      User.hasMany(Friend);
-      Friend.belongsToMany(User, {
+      User.belongsToMany(User, {
+        as: 'friends',
         through: 'users_friends',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+        foreignKey: 'userId',
+      });
+      User.belongsToMany(User, {
+        as: 'friendOf',
+        through: 'users_friends',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        foreignKey: 'friendId',
       });
 
       User.belongsToMany(User, {
