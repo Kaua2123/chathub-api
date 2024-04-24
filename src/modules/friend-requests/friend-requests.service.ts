@@ -97,10 +97,14 @@ export class FriendRequestsService {
     if (!friendRequest) throw new FriendRequestNotFound();
 
     const userWhoSent = await this.userModel.findByPk(friendRequest.senderId);
+    const userWhoReceive = await this.userModel.findByPk(
+      friendRequest.receiverId,
+    );
 
     if (!userWhoSent) throw new UserNotFound();
 
     await userWhoSent.$add('friends', friendRequest.receiverId);
+    await userWhoReceive.$add('friends', friendRequest.senderId);
 
     await friendRequest.destroy();
 
