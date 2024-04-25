@@ -11,6 +11,8 @@ import { ConversationModule } from './modules/conversation/conversation.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { FriendsModule } from './modules/friends/friends.module';
+import { FriendRequestsController } from './modules/friend-requests/friend-requests.controller';
+import { FriendsController } from './modules/friends/friends.controller';
 
 @Module({
   imports: [
@@ -33,6 +35,6 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthRequired)
       .exclude('user/create', 'user')
-      .forRoutes(UsersController);
+      .forRoutes(UsersController, FriendRequestsController, FriendsController);
   }
 }

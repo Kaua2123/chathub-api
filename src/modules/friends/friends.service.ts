@@ -12,8 +12,24 @@ export class FriendsService {
   async getUserFriends(@Param('id') id: number) {
     const user = await this.userModel.findByPk(id);
 
-    const friends = await user.$get('friends' as keyof User);
+    const friends: User = await user.$get('friends' as keyof User, {
+      attributes: ['username', 'image', 'is_online'],
+    });
 
     return friends;
+  }
+
+  async delete(
+    @Param('user_id') user_id: number,
+    @Param('friend_id') friend_id: number,
+  ) {
+    const user = await this.userModel.findByPk(user_id);
+
+    await user.$remove('friends', friend_id);
+    await user.$remove('friendOf', friend_id);
+
+    return {
+      message: 'Você removeu este usuário de sua lista de amigos.',
+    };
   }
 }
