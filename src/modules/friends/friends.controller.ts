@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { FriendsRepository } from './repositories/friends-repository';
 
 @Controller('/user')
@@ -10,7 +10,7 @@ export class FriendsController {
     return this.friendsRepository.getUserFriends(id);
   }
 
-  @Get('/removeFriends/:user_id/:friend_id')
+  @Delete('/removeFriends/:user_id/:friend_id')
   async delete(
     @Param('user_id') user_id: number,
     @Param('friend_id') friend_id: number,

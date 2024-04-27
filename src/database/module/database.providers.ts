@@ -1,12 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
-import 'dotenv/config';
 import * as constants from '../../constants';
+import 'dotenv/config';
 
 import { User } from '../../modules/users/user.model';
 import { FriendRequest } from '../../modules/friend-requests/friend-request.model';
 import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
-import { Group } from '../../modules/groups/group.model';
-import { Conversation } from '../../modules/conversation/conversation.model';
+import { Conversation } from '../../modules/conversations/conversation.model';
 import { Notification } from '../../modules/notifications/notifications.model';
 import { Message } from '../../modules/messages/message.model';
 
@@ -29,7 +28,6 @@ export const databaseProviders = [
         User,
         FriendRequest,
         BlockedUsers,
-        Group,
         Conversation,
         Notification,
         Message,
@@ -55,7 +53,6 @@ export const databaseProviders = [
         through: FriendRequest,
         foreignKey: 'senderId',
       });
-
       User.belongsToMany(User, {
         as: 'receiver',
         through: FriendRequest,
@@ -69,24 +66,15 @@ export const databaseProviders = [
         onUpdate: 'CASCADE',
       });
 
-      User.hasMany(Group);
-      Group.belongsToMany(User, {
-        through: 'users_groups',
+      User.belongsToMany(Conversation, {
+        as: 'users',
+        through: 'users_conversations',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
-
-      User.hasMany(Conversation);
-      Conversation.belongsTo(User, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      });
-
-      Group.hasOne(Conversation);
-      Conversation.belongsTo(Group, {
-        foreignKey: {
-          allowNull: true,
-        },
+      Conversation.belongsToMany(User, {
+        as: 'conversations',
+        through: 'users_conversations',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });

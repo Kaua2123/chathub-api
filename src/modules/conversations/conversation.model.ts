@@ -2,27 +2,33 @@ import {
   AllowNull,
   AutoIncrement,
   Column,
+  DataType,
   Default,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 
+export type Type = 'Conversation' | 'Group';
+
 @Table({ timestamps: true })
-export class Group extends Model {
+export class Conversation extends Model {
+  @AutoIncrement
   @PrimaryKey
   @AllowNull(false)
-  @AutoIncrement
   @Column
   id: number;
 
   @AllowNull(false)
-  @Default('')
+  @Default('Conversation')
+  @Column(DataType.ENUM('Conversation', 'Group'))
+  type: Type;
+
+  @AllowNull(true)
   @Column
   name: string;
 
-  @AllowNull(false)
-  @Default('')
+  @AllowNull(true)
   @Column
-  image: string;
+  participants: string;
 }

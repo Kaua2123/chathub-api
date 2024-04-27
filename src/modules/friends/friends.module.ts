@@ -12,8 +12,8 @@ import { friendsProviders } from './friends.providers';
   providers: [
     FriendsService,
     UsersService,
-    ...friendsProviders,
     ...usersProviders,
+    ...friendsProviders,
   ],
   exports: [],
 })
