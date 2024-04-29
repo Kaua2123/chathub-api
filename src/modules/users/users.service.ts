@@ -69,5 +69,7 @@ export class UsersService {
     const user = await this.userModel.findByPk(id);
 
     await user.destroy();
+
+    return null;
   }
 }

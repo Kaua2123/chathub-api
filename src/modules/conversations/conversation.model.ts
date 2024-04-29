@@ -9,7 +9,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-export type ConversationType = 'Conversation' | 'Group';
+export type ConversationType = 'conversation' | 'group';
 
 @Table({ timestamps: true })
 export class Conversation extends Model {
@@ -20,8 +20,8 @@ export class Conversation extends Model {
   id: number;
 
   @AllowNull(false)
-  @Default('Conversation')
-  @Column(DataType.ENUM('Conversation', 'Group'))
+  @Default('conversation')
+  @Column(DataType.ENUM('conversation', 'group'))
   type: ConversationType;
 
   @AllowNull(true)
@@ -31,4 +31,8 @@ export class Conversation extends Model {
   @AllowNull(true)
   @Column
   participants: string;
+
+  @AllowNull(true)
+  @Column
+  creator_id: number;
 }

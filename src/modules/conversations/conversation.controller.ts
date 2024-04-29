@@ -39,4 +39,9 @@ export class ConversationController {
       ...users_id,
     );
   }
+
+  @Delete('/delete/:id')
+  async delete(@Param('id') id: number) {
+    return this.conversationService.delete(id);
+  }
 }

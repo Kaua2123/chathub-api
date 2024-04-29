@@ -24,10 +24,12 @@ export class ConversationService {
     @Param('user_creator_id') user_creator_id: number,
     @Param('user_invited_id') user_invited_id: number,
   ) {
-    const conversation = await this.conversationModel.create();
-
     const user_creator = await this.userModel.findByPk(user_creator_id);
     const user_invited = await this.userModel.findByPk(user_invited_id);
+
+    const conversation = await this.conversationModel.create({
+      creator_id: user_creator_id,
+    });
 
     await user_creator.$add('conversation', conversation);
     await user_invited.$add('conversation', conversation);
@@ -77,5 +79,11 @@ export class ConversationService {
       message: `Usuários removidos: ${users.map((user) => user.username)}`,
       conversation,
     };
+  }
+
+  async delete(@Param('id') id: number) {
+    const conversation = await this.conversationModel.findByPk(id);
+
+    await conversation.destroy();
   }
 }
