@@ -1,13 +1,15 @@
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ConversationService } from './conversation.service';
+import { ConversationsRepository } from './repositories/conversations-repository';
 
 @Controller('/conversation')
-export class ConversationController {
-  constructor(private readonly conversationService: ConversationService) {}
+export class ConversationsController {
+  constructor(
+    private readonly conversationsRepository: ConversationsRepository,
+  ) {}
 
   @Get('/:id')
   async getUserConversations(@Param('id') id: number) {
-    return this.conversationService.getUserConversations(id);
+    return this.conversationsRepository.getUserConversations(id);
   }
 
   @Post('/create/:user_creator_id/:user_invited_id')
@@ -15,7 +17,10 @@ export class ConversationController {
     @Param('user_creator_id') user_creator_id: number,
     @Param('user_invited_id') user_invited_id: number,
   ) {
-    return this.conversationService.create(user_creator_id, user_invited_id);
+    return this.conversationsRepository.create(
+      user_creator_id,
+      user_invited_id,
+    );
   }
 
   @Post('/addMoreUsersToConversation/:conversation_id/:users_id')
@@ -23,7 +28,7 @@ export class ConversationController {
     @Param('conversation_id') conversation_id: number,
     @Param('users_id') users_id: number[],
   ) {
-    return this.conversationService.addMoreUsersToConversation(
+    return this.conversationsRepository.addMoreUsersToConversation(
       conversation_id,
       ...users_id,
     );
@@ -34,7 +39,7 @@ export class ConversationController {
     @Param('conversation_id') conversation_id: number,
     @Param('users_id') users_id: number[],
   ) {
-    return this.conversationService.removeUsersFromConversation(
+    return this.conversationsRepository.removeUsersFromConversation(
       conversation_id,
       ...users_id,
     );
@@ -42,6 +47,6 @@ export class ConversationController {
 
   @Delete('/delete/:id')
   async delete(@Param('id') id: number) {
-    return this.conversationService.delete(id);
+    return this.conversationsRepository.delete(id);
   }
 }

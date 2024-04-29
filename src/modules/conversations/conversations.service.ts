@@ -4,7 +4,7 @@ import { User } from '../users/user.model';
 import { Conversation } from './conversation.model';
 
 @Injectable()
-export class ConversationService {
+export class ConversationsService {
   constructor(
     @Inject(CONVERSATION_REPOSITORY)
     private conversationModel: typeof Conversation,

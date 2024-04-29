@@ -6,13 +6,13 @@ import { UsersController } from './modules/users/users.controller';
 import { SocketModule } from './modules/socket/socket.module';
 import { FriendRequestsModule } from './modules/friend-requests/friend-requests.module';
 import { BlockedUsersModule } from './modules/blocked-users/blocked-users.module';
-import { ConversationModule } from './modules/conversations/conversation.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { FriendsModule } from './modules/friends/friends.module';
 import { FriendRequestsController } from './modules/friend-requests/friend-requests.controller';
 import { FriendsController } from './modules/friends/friends.controller';
-import { ConversationController } from './modules/conversations/conversation.controller';
+import { ConversationsModule } from './modules/conversations/conversations.module';
+import { ConversationsController } from './modules/conversations/conversations.controller';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { ConversationController } from './modules/conversations/conversation.con
     FriendsModule,
     FriendRequestsModule,
     BlockedUsersModule,
-    ConversationModule,
+    ConversationsModule,
     MessagesModule,
     NotificationsModule,
   ],
@@ -38,7 +38,7 @@ export class AppModule implements NestModule {
         UsersController,
         FriendRequestsController,
         FriendsController,
-        ConversationController,
+        ConversationsController,
       );
   }
 }
