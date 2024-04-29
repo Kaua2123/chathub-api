@@ -6,12 +6,12 @@ import { Conversation } from './conversation.model';
 @Injectable()
 export class ConversationService {
   constructor(
-    @Inject(CONVERSATION_REPOSITORY) // algo a ver com isso
+    @Inject(CONVERSATION_REPOSITORY)
     private conversationModel: typeof Conversation,
     @Inject(USERS_REPOSITORY)
     private userModel: typeof User,
   ) {}
-  // ALGO ERRADO NA INJEÇAO DE DEPEMDEIMCIA (conversationModel)
+
   async getUserConversations(@Param('id') id: number) {
     const user = await this.userModel.findByPk(id);
 
@@ -24,7 +24,6 @@ export class ConversationService {
     @Param('user_creator_id') user_creator_id: number,
     @Param('user_invited_id') user_invited_id: number,
   ) {
-    console.log(this.conversationModel.create, Conversation.create);
     const conversation = await this.conversationModel.create();
 
     const user_creator = await this.userModel.findByPk(user_creator_id);
@@ -34,11 +33,32 @@ export class ConversationService {
     await user_invited.$add('conversation', conversation);
 
     return {
-      message: `New conversation created with ${user_creator.username} and ${user_invited.username}`,
+      message: `Nova conversa criada com ${user_creator.username} e ${user_invited.username}`,
       conversation,
     };
   }
 
-  // receber 2 ou mais ids de usuarios que participaraão da conversa
-  // ir adicionando eles na conversa com conversation.add
+  async addMoreUsersToConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('users_id') ...users_id: number[]
+  ) {
+    const conversation = await this.conversationModel.findByPk(conversation_id);
+    console.log(users_id);
+
+    const users = await this.userModel.findAll({
+      where: { id: users_id },
+    });
+
+    conversation.$add('user', users);
+
+    await conversation.update(
+      { type: 'Group' },
+      { where: { type: 'Conversation' } },
+    );
+
+    return {
+      message: `Usuários adicionados: ${users.map((user) => user.username + '')}`,
+      conversation,
+    };
+  }
 }

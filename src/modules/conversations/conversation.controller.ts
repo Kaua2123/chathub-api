@@ -17,4 +17,15 @@ export class ConversationController {
   ) {
     return this.conversationService.create(user_creator_id, user_invited_id);
   }
+
+  @Post('/addMoreUsersToConversation/:conversation_id/:users_id')
+  async addMoreUsersToConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('users_id') users_id: number[],
+  ) {
+    return this.conversationService.addMoreUsersToConversation(
+      conversation_id,
+      ...users_id,
+    );
+  }
 }
