@@ -7,11 +7,11 @@ import { ConversationsService } from '../conversations.service';
 export class ConversationServiceRepository implements ConversationsRepository {
   constructor(private readonly conversationsService: ConversationsService) {}
 
-  getUserConversations(id: number): Promise<Conversation> {
+  async getUserConversations(id: number): Promise<Conversation> {
     return this.conversationsService.getUserConversations(id);
   }
 
-  addMoreUsersToConversation(
+  async addMoreUsersToConversation(
     conversation_id: number,
     ...users_id: number[]
   ): Promise<{ message: string; conversation: Conversation }> {
@@ -21,7 +21,7 @@ export class ConversationServiceRepository implements ConversationsRepository {
     );
   }
 
-  removeUsersFromConversation(
+  async removeUsersFromConversation(
     conversation_id: number,
     ...users_id: number[]
   ): Promise<{ message: string; conversation: Conversation }> {
@@ -31,14 +31,14 @@ export class ConversationServiceRepository implements ConversationsRepository {
     );
   }
 
-  create(
+  async create(
     user_creator_id: number,
     user_invited_id: number,
   ): Promise<{ message: string; conversation: Conversation }> {
     return this.conversationsService.create(user_creator_id, user_invited_id);
   }
 
-  delete(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     return this.conversationsService.delete(id);
   }
 }
