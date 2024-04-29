@@ -27,8 +27,8 @@ export const databaseProviders = [
       sequelize.addModels([
         User,
         FriendRequest,
-        BlockedUsers,
         Conversation,
+        BlockedUsers,
         Notification,
         Message,
       ]);
@@ -67,13 +67,11 @@ export const databaseProviders = [
       });
 
       User.belongsToMany(Conversation, {
-        as: 'users',
         through: 'users_conversations',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       });
       Conversation.belongsToMany(User, {
-        as: 'conversations',
         through: 'users_conversations',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',

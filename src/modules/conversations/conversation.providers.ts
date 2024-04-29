@@ -1,4 +1,4 @@
-import { Conversation } from './Conversation.model';
+import { Conversation } from '../conversations/conversation.model';
 import * as constants from '../../constants';
 
 export const conversationProviders = [

@@ -1,15 +1,15 @@
 import {
+  Model,
   AllowNull,
   AutoIncrement,
   Column,
   DataType,
   Default,
-  Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 
-export type Type = 'Conversation' | 'Group';
+export type ConversationType = 'Conversation' | 'Group';
 
 @Table({ timestamps: true })
 export class Conversation extends Model {
@@ -22,7 +22,7 @@ export class Conversation extends Model {
   @AllowNull(false)
   @Default('Conversation')
   @Column(DataType.ENUM('Conversation', 'Group'))
-  type: Type;
+  type: ConversationType;
 
   @AllowNull(true)
   @Column
