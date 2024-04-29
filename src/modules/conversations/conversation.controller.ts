@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 
 @Controller('/conversation')
@@ -24,6 +24,17 @@ export class ConversationController {
     @Param('users_id') users_id: number[],
   ) {
     return this.conversationService.addMoreUsersToConversation(
+      conversation_id,
+      ...users_id,
+    );
+  }
+
+  @Delete('/removeUsersFromConversation/:conversation_id/:users_id')
+  async removeUsersFromConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('users_id') users_id: number[],
+  ) {
+    return this.conversationService.removeUsersFromConversation(
       conversation_id,
       ...users_id,
     );

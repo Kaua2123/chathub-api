@@ -43,7 +43,6 @@ export class ConversationService {
     @Param('users_id') ...users_id: number[]
   ) {
     const conversation = await this.conversationModel.findByPk(conversation_id);
-    console.log(users_id);
 
     const users = await this.userModel.findAll({
       where: { id: users_id },
@@ -57,7 +56,25 @@ export class ConversationService {
     );
 
     return {
-      message: `Usuários adicionados: ${users.map((user) => user.username + '')}`,
+      message: `Usuários adicionados: ${users.map((user) => user.username)}`,
+      conversation,
+    };
+  }
+
+  async removeUsersFromConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('users_id') ...users_id: number[]
+  ) {
+    const conversation = await this.conversationModel.findByPk(conversation_id);
+
+    const users = await this.userModel.findAll({
+      where: { id: users_id },
+    });
+
+    conversation.$remove('user', users);
+
+    return {
+      message: `Usuários removidos: ${users.map((user) => user.username)}`,
       conversation,
     };
   }
