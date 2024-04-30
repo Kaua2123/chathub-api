@@ -89,7 +89,14 @@ export const databaseProviders = [
         onUpdate: 'CASCADE',
       });
 
-      User.hasMany(Message);
+      Conversation.hasMany(Message);
+      Message.belongsTo(Conversation);
+
+      User.belongsToMany(Message, {
+        through: 'users_messages',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      });
       Message.belongsToMany(User, {
         through: 'users_messages',
         onDelete: 'CASCADE',
