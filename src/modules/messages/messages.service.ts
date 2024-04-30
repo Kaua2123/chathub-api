@@ -16,4 +16,18 @@ export class MessagesService {
 
     return messages;
   }
+
+  async create(
+    content: string,
+    @Param('conversation_id') conversation_id: number,
+    @Param('user_id') user_id: number,
+  ) {
+    const message = await this.messageModel.create({
+      content,
+      ConversationId: conversation_id,
+      UserId: user_id,
+    });
+
+    return message;
+  }
 }

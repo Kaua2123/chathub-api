@@ -20,4 +20,9 @@ export class Message extends Model {
   @Default('')
   @Column
   content: string;
+
+  @AllowNull(false)
+  @Default(true)
+  @Column
+  is_saved: boolean;
 }

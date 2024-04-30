@@ -92,16 +92,8 @@ export const databaseProviders = [
       Conversation.hasMany(Message);
       Message.belongsTo(Conversation);
 
-      User.belongsToMany(Message, {
-        through: 'users_messages',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      });
-      Message.belongsToMany(User, {
-        through: 'users_messages',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      });
+      User.hasMany(Message);
+      Message.belongsTo(User);
 
       await sequelize.sync();
       return sequelize;
