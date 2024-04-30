@@ -22,7 +22,7 @@ export class Message extends Model {
   content: string;
 
   @AllowNull(false)
-  @Default(true)
+  @Default(false)
   @Column
   is_saved: boolean;
 }

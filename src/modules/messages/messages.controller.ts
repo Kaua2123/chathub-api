@@ -1,5 +1,14 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { MessagesService } from './messages.service';
+import { CreateMessageDto } from './dtos/create-message-dto';
 
 @Controller('/messages')
 export class MessagesController {
@@ -10,12 +19,23 @@ export class MessagesController {
     return this.messagesService.getMessagesOfAConversation(id);
   }
 
+  @Get('/show/:id')
+  async show(@Param('id') id: number) {
+    return this.messagesService.show(id);
+  }
+
   @Post('/create')
-  async create(
-    content: string,
-    @Param('conversation_id') conversation_id: number,
-    @Param('user_id') user_id: number,
-  ) {
-    return this.messagesService.create(content, conversation_id, user_id);
+  async create(@Body() createMessageDto: CreateMessageDto) {
+    return this.messagesService.create(createMessageDto);
+  }
+
+  @Put('/update/:id')
+  async update(@Param('id') id: number, @Body() content: string) {
+    return this.messagesService.update(id, content);
+  }
+
+  @Delete('/delete/:id')
+  async delete(@Param('id') id: number) {
+    return this.messagesService.delete(id);
   }
 }
