@@ -5,14 +5,17 @@ import { friendRequestsProviders } from './friend-requests.providers';
 import { FriendRequestsController } from './friend-requests.controller';
 import { UsersModule } from '../users/users.module';
 import { usersProviders } from '../users/users.providers';
+import { notificationsProviders } from '../notifications/notifications.providers';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule],
+  imports: [DatabaseModule, UsersModule, NotificationsModule],
   controllers: [FriendRequestsController],
   providers: [
     FriendRequestsService,
     ...friendRequestsProviders,
     ...usersProviders,
+    ...notificationsProviders,
   ],
   exports: [FriendRequestsService],
 })
