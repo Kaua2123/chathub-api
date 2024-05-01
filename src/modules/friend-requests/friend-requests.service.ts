@@ -84,8 +84,8 @@ export class FriendRequestsService {
 
     await this.notificationsModel.create({
       content: `Você recebeu um pedido de amizade de ${userWhoSent.username}`,
-      UserId: receiverId,
       type: 'friend_request',
+      UserId: receiverId,
     });
 
     return friendRequest;

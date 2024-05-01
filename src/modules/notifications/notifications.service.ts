@@ -22,14 +22,14 @@ export class NotificationsService {
 
   async create(
     content: string,
-    UserId: number,
     type: string,
+    UserId: number,
     ConversationId?: number,
   ) {
     const notification = await this.notificationModel.create({
       content,
-      UserId,
       type,
+      UserId,
       ConversationId,
     });
 
