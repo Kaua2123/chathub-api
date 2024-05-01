@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dtos/create-message-dto';
+import { UpdateMessageDto } from './dtos/update-message-dto';
 
 @Controller('/messages')
 export class MessagesController {
@@ -30,8 +31,11 @@ export class MessagesController {
   }
 
   @Put('/update/:id')
-  async update(@Param('id') id: number, @Body() content: string) {
-    return this.messagesService.update(id, content);
+  async update(
+    @Param('id') id: number,
+    @Body() updateMessageDto: UpdateMessageDto,
+  ) {
+    return this.messagesService.update(id, updateMessageDto);
   }
 
   @Delete('/delete/:id')

@@ -2,6 +2,8 @@ import { Body, Inject, Injectable, Param } from '@nestjs/common';
 import { MESSAGES_REPOSITORY } from 'src/constants';
 import { Message } from './message.model';
 import { CreateMessageDto } from './dtos/create-message-dto';
+import { UpdateMessageDto } from './dtos/update-message-dto';
+import { MessageNotFound } from './errors/message-not-found';
 
 @Injectable()
 export class MessagesService {
@@ -15,11 +17,15 @@ export class MessagesService {
       where: { ConversationId: id },
     });
 
+    if (!messages) throw new MessageNotFound();
+
     return messages;
   }
 
   async show(@Param('id') id: number) {
     const message = await this.messageModel.findByPk(id);
+
+    if (!message) throw new MessageNotFound();
 
     return message;
   }
@@ -33,14 +39,21 @@ export class MessagesService {
       UserId,
     });
 
+    if (!message) throw new MessageNotFound();
+
     return message;
   }
 
-  async update(@Param('id') id: number, @Body() content: string) {
+  async update(
+    @Param('id') id: number,
+    @Body() updateMessageDto: UpdateMessageDto,
+  ) {
     const message = await this.messageModel.findByPk(id);
 
+    if (!message) throw new MessageNotFound();
+
     const updatedMessage = await message.update({
-      content,
+      content: updateMessageDto.content,
     });
 
     return updatedMessage;
@@ -48,6 +61,8 @@ export class MessagesService {
 
   async delete(@Param('id') id: number) {
     const message = await this.messageModel.findByPk(id);
+
+    if (!message) throw new MessageNotFound();
 
     await message.destroy();
 
