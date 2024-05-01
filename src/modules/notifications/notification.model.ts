@@ -6,7 +6,10 @@ import {
   AutoIncrement,
   AllowNull,
   Default,
+  DataType,
 } from 'sequelize-typescript';
+
+export type NotificationType = 'friend_request' | 'message';
 
 @Table({ timestamps: true })
 export class Notification extends Model {
@@ -22,7 +25,6 @@ export class Notification extends Model {
   content: string;
 
   @AllowNull(false)
-  @Default('')
-  @Column
-  type: string;
+  @Column(DataType.ENUM('friend_request', 'message'))
+  type: NotificationType;
 }
