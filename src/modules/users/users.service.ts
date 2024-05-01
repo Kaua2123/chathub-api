@@ -70,6 +70,8 @@ export class UsersService {
 
     await user.destroy();
 
-    return null;
+    return {
+      message: 'null',
+    };
   }
 }

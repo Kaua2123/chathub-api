@@ -7,27 +7,27 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dtos/create-message-dto';
 import { UpdateMessageDto } from './dtos/update-message-dto';
+import { MessagesRepository } from './repositories/messages-repository';
 
 @Controller('/messages')
 export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messagesRepository: MessagesRepository) {}
 
   @Get('/getMessages/:id')
   async getMessagesOfAConversation(@Param('id') id: number) {
-    return this.messagesService.getMessagesOfAConversation(id);
+    return this.messagesRepository.getMessagesOfAConversation(id);
   }
 
   @Get('/show/:id')
   async show(@Param('id') id: number) {
-    return this.messagesService.show(id);
+    return this.messagesRepository.show(id);
   }
 
   @Post('/create')
   async create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+    return this.messagesRepository.create(createMessageDto);
   }
 
   @Put('/update/:id')
@@ -35,11 +35,11 @@ export class MessagesController {
     @Param('id') id: number,
     @Body() updateMessageDto: UpdateMessageDto,
   ) {
-    return this.messagesService.update(id, updateMessageDto);
+    return this.messagesRepository.update(id, updateMessageDto);
   }
 
   @Delete('/delete/:id')
   async delete(@Param('id') id: number) {
-    return this.messagesService.delete(id);
+    return this.messagesRepository.delete(id);
   }
 }

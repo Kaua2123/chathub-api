@@ -26,7 +26,7 @@ export class UsersServiceRepository implements UsersRepository {
     return this.userService.update(id, updateUserDto);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<{ message: string }> {
     return this.userService.delete(id);
   }
 }

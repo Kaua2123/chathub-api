@@ -66,6 +66,8 @@ export class MessagesService {
 
     await message.destroy();
 
-    return null;
+    return {
+      message: 'null',
+    };
   }
 }
