@@ -4,10 +4,10 @@ import 'dotenv/config';
 
 import { User } from '../../modules/users/user.model';
 import { FriendRequest } from '../../modules/friend-requests/friend-request.model';
-import { BlockedUsers } from '../../modules/blocked-users/blocked-users.model';
 import { Conversation } from '../../modules/conversations/conversation.model';
 import { Notification } from '../../modules/notifications/notification.model';
 import { Message } from '../../modules/messages/message.model';
+import { BlockedUsers } from 'src/modules/blocked-users/blocked-users.model';
 
 const { DATABASE, DATABASE_HOST, DATABASE_USERNAME, DATABASE_PASSWORD } =
   process.env;
@@ -28,9 +28,9 @@ export const databaseProviders = [
         User,
         FriendRequest,
         Conversation,
-        BlockedUsers,
         Notification,
         Message,
+        BlockedUsers,
       ]);
 
       User.belongsToMany(User, {
@@ -60,11 +60,7 @@ export const databaseProviders = [
       });
 
       User.hasMany(BlockedUsers);
-      BlockedUsers.belongsToMany(User, {
-        through: 'users_blocked_users',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      });
+      BlockedUsers.belongsTo(User);
 
       User.belongsToMany(Conversation, {
         through: 'users_conversations',
