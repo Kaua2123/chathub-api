@@ -1,15 +1,18 @@
 import { Body, Inject, Injectable, Param } from '@nestjs/common';
-import { MESSAGES_REPOSITORY } from 'src/constants';
+import { MESSAGES_REPOSITORY, NOTIFICATIONS_REPOSITORY } from 'src/constants';
 import { Message } from './message.model';
 import { CreateMessageDto } from './dtos/create-message-dto';
 import { UpdateMessageDto } from './dtos/update-message-dto';
 import { MessageNotFound } from './errors/message-not-found';
+import { Notification } from '../notifications/notification.model';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @Inject(MESSAGES_REPOSITORY)
     private messageModel: typeof Message,
+    @Inject(NOTIFICATIONS_REPOSITORY)
+    private notificationModel: typeof Notification,
   ) {}
 
   async getMessagesOfAConversation(@Param('id') id: number) {

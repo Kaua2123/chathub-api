@@ -1,6 +1,7 @@
 import { Inject, Injectable, Param } from '@nestjs/common';
 import { NOTIFICATIONS_REPOSITORY } from 'src/constants';
 import { Notification } from './notification.model';
+import { NotificationNotFound } from './errors/notification-not-found';
 
 @Injectable()
 export class NotificationsService {
@@ -13,6 +14,8 @@ export class NotificationsService {
     const notifications = await this.notificationModel.findAll({
       where: { userId: id },
     });
+
+    if (!notifications) throw new NotificationNotFound();
 
     return notifications;
   }
@@ -30,12 +33,20 @@ export class NotificationsService {
       ConversationId,
     });
 
+    if (!notification) throw new NotificationNotFound();
+
     return notification;
   }
-}
 
-// enviar notificaçoes assim que faz outras ativiades
-// friend request: assim qm adnar u mpedido de amizade, criar uma notificaçaoa enviadndo pro
-// usuario que recebeu o peiddo de ammizade
-// message: mesma coisa. assim q enviar uma mensagem criar uma notificaçao envinado pro
-// usuario que recebeu o pedido de amizade.
+  async delete(@Param('id') id: number) {
+    const notification = await this.notificationModel.findByPk(id);
+
+    if (!notification) throw new NotificationNotFound();
+
+    await notification.destroy();
+
+    return {
+      message: 'null',
+    };
+  }
+}
