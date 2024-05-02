@@ -8,9 +8,16 @@ import { usersProviders } from '../users/users.providers';
 import { notificationsProviders } from '../notifications/notifications.providers';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { NotificationsService } from '../notifications/notifications.service';
+import { blockedUsersProviders } from '../blocked-users/blocked-users-providers';
+import { BlockedUsersModule } from '../blocked-users/blocked-users.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, NotificationsModule],
+  imports: [
+    DatabaseModule,
+    UsersModule,
+    NotificationsModule,
+    BlockedUsersModule,
+  ],
   controllers: [FriendRequestsController],
   providers: [
     FriendRequestsService,
@@ -18,6 +25,7 @@ import { NotificationsService } from '../notifications/notifications.service';
     ...friendRequestsProviders,
     ...usersProviders,
     ...notificationsProviders,
+    ...blockedUsersProviders,
   ],
   exports: [FriendRequestsService],
 })

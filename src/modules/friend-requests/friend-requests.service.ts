@@ -1,6 +1,7 @@
 import { Body, Inject, Injectable, Param } from '@nestjs/common';
 
 import {
+  BLOCKED_USERS_REPOSITORY,
   FRIEND_REQUESTS_REPOSITORY,
   NOTIFICATIONS_REPOSITORY,
   USERS_REPOSITORY,
@@ -14,6 +15,8 @@ import { MissingId } from '../users/errors/missing-id';
 import { FriendRequestNotFound } from './errors/friend-request-not-found';
 import { UserNotFound } from '../users/errors/user-not-found';
 import { Notification } from '../notifications/notification.model';
+import { BlockedUsers } from '../blocked-users/blocked-users.model';
+import { NotAllowed } from '../blocked-users/errors/not-allowed';
 
 @Injectable()
 export class FriendRequestsService {
@@ -24,6 +27,8 @@ export class FriendRequestsService {
     private userModel: typeof User,
     @Inject(NOTIFICATIONS_REPOSITORY)
     private notificationsModel: typeof Notification,
+    @Inject(BLOCKED_USERS_REPOSITORY)
+    private blockedUserModel: typeof BlockedUsers,
   ) {}
 
   async listUserFriendRequests(@Param('user_id') user_id: number) {
@@ -70,10 +75,21 @@ export class FriendRequestsService {
   async create(@Body() sendFriendRequestDto: SendFriendRequestDto) {
     const { id, senderId, receiverId } = sendFriendRequestDto;
 
-    const userWhoSent = await this.userModel.findByPk(senderId);
+    // id 2
+    const userWhoSent = await this.userModel.findByPk(senderId); // se ele ta na lista de block do de baixo
+    // id 4
     const userWhoReceive = await this.userModel.findByPk(receiverId);
 
     if (!userWhoSent || !userWhoReceive) throw new UserNotFound();
+
+    const blockedUser = await this.blockedUserModel.findOne({
+      where: {
+        UserId: senderId,
+        user_who_blocked_id: receiverId,
+      },
+    });
+
+    if (blockedUser) throw new NotAllowed();
 
     const friendRequest = await this.friendRequestModel.create({
       id,
