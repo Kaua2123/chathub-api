@@ -14,4 +14,8 @@ export class BlockedUsers extends Model {
   @AllowNull(false)
   @Column
   id: number;
+
+  @AllowNull(false)
+  @Column
+  user_who_blocked_id: number;
 }
