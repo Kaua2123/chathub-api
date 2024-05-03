@@ -39,8 +39,6 @@ export class ConversationsService {
     const user_creator = await this.userModel.findByPk(user_creator_id);
     const user_invited = await this.userModel.findByPk(user_invited_id);
 
-    // se o criador for bloqueado pelo q esta sendo convidado, n permitir.
-
     if (!user_creator || !user_invited) throw new UserNotFound();
 
     const blockedUser = await this.blockedUserModel.findOne({

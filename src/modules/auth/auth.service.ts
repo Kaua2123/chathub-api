@@ -8,6 +8,7 @@ import { AuthUserDto } from './dto/auth-user-dto';
 import { User } from '../users/user.model';
 import { USERS_REPOSITORY } from 'src/constants';
 import { PasswordsDoNotMatch } from '../users/errors/passwords-do-not-match';
+import { UserNotFound } from '../users/errors/user-not-found';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,8 @@ export class AuthService {
         email,
       },
     });
+
+    if (!user) throw new UserNotFound();
 
     const pass = await bcrypt.compare(password, user.password_hash);
     const { id } = user;
