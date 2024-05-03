@@ -17,6 +17,7 @@ import { UserNotFound } from '../users/errors/user-not-found';
 import { Notification } from '../notifications/notification.model';
 import { BlockedUsers } from '../blocked-users/blocked-users.model';
 import { NotAllowed } from '../blocked-users/errors/not-allowed';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class FriendRequestsService {
@@ -84,8 +85,16 @@ export class FriendRequestsService {
 
     const blockedUser = await this.blockedUserModel.findOne({
       where: {
-        UserId: senderId,
-        user_who_blocked_id: receiverId,
+        [Op.or]: [
+          {
+            UserId: senderId,
+            user_who_blocked_id: receiverId,
+          },
+          {
+            UserId: receiverId,
+            user_who_blocked_id: senderId,
+          },
+        ],
       },
     });
 

@@ -10,6 +10,7 @@ import { ConversationNotFound } from './errors/conversation-not-found';
 import { UserNotFound } from '../users/errors/user-not-found';
 import { BlockedUsers } from '../blocked-users/blocked-users.model';
 import { NotAllowed } from '../blocked-users/errors/not-allowed';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ConversationsService {
@@ -43,8 +44,16 @@ export class ConversationsService {
 
     const blockedUser = await this.blockedUserModel.findOne({
       where: {
-        UserId: user_creator_id,
-        user_who_blocked_id: user_invited_id,
+        [Op.or]: [
+          {
+            UserId: user_creator_id,
+            user_who_blocked_id: user_invited_id,
+          },
+          {
+            UserId: user_invited_id,
+            user_who_blocked_id: user_creator_id,
+          },
+        ],
       },
     });
 
