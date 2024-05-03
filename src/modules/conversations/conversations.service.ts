@@ -1,9 +1,15 @@
-import { CONVERSATION_REPOSITORY, USERS_REPOSITORY } from 'src/constants';
+import {
+  BLOCKED_USERS_REPOSITORY,
+  CONVERSATION_REPOSITORY,
+  USERS_REPOSITORY,
+} from 'src/constants';
 import { Inject, Injectable, Param } from '@nestjs/common';
 import { User } from '../users/user.model';
 import { Conversation } from './conversation.model';
 import { ConversationNotFound } from './errors/conversation-not-found';
 import { UserNotFound } from '../users/errors/user-not-found';
+import { BlockedUsers } from '../blocked-users/blocked-users.model';
+import { NotAllowed } from '../blocked-users/errors/not-allowed';
 
 @Injectable()
 export class ConversationsService {
@@ -12,6 +18,8 @@ export class ConversationsService {
     private conversationModel: typeof Conversation,
     @Inject(USERS_REPOSITORY)
     private userModel: typeof User,
+    @Inject(BLOCKED_USERS_REPOSITORY)
+    private blockedUserModel: typeof BlockedUsers,
   ) {}
 
   async getUserConversations(@Param('id') id: number) {
@@ -31,7 +39,18 @@ export class ConversationsService {
     const user_creator = await this.userModel.findByPk(user_creator_id);
     const user_invited = await this.userModel.findByPk(user_invited_id);
 
+    // se o criador for bloqueado pelo q esta sendo convidado, n permitir.
+
     if (!user_creator || !user_invited) throw new UserNotFound();
+
+    const blockedUser = await this.blockedUserModel.findOne({
+      where: {
+        UserId: user_creator_id,
+        user_who_blocked_id: user_invited_id,
+      },
+    });
+
+    if (blockedUser) throw new NotAllowed();
 
     const conversation = await this.conversationModel.create({
       creator_id: user_creator_id,
