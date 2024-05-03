@@ -13,6 +13,9 @@ import { FriendRequestsController } from './modules/friend-requests/friend-reque
 import { FriendsController } from './modules/friends/friends.controller';
 import { ConversationsModule } from './modules/conversations/conversations.module';
 import { ConversationsController } from './modules/conversations/conversations.controller';
+import { ImagesModule } from './modules/images/images.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -25,6 +28,11 @@ import { ConversationsController } from './modules/conversations/conversations.c
     ConversationsModule,
     MessagesModule,
     NotificationsModule,
+    ImagesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'images'), // Caminho para a pasta de imagens
+      serveRoot: '/images', // Rota para acessar as imagens no navegador
+    }),
   ],
   controllers: [],
   providers: [],

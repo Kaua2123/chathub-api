@@ -1,4 +1,5 @@
 import {
+  AfterSave,
   AllowNull,
   AutoIncrement,
   BeforeSave,
@@ -38,6 +39,9 @@ export class User extends Model {
   @Column
   image: string;
 
+  @Column(DataType.VIRTUAL)
+  image_url: string;
+
   @AllowNull(false)
   @Default('')
   @Column(DataType.VIRTUAL)
@@ -56,5 +60,11 @@ export class User extends Model {
   static async hashPassword(user: User) {
     const password = user.getDataValue('password');
     if (password) user.password_hash = await hash(password, 8);
+  }
+
+  @AfterSave
+  static async addImageUrl(user: User) {
+    const image = user.getDataValue('image');
+    if (image) user.image_url = `http://localhost:3000/images/${image}`;
   }
 }
