@@ -19,6 +19,7 @@ import { BlockedUsers } from '../blocked-users/blocked-users.model';
 import { NotAllowed } from '../blocked-users/errors/not-allowed';
 import { Op } from 'sequelize';
 import { AlreadyFriends } from './errors/already-friends';
+import { CannotSendFriendRequestToYourself } from './errors/cannot-send-friend-request-to-yourself';
 
 @Injectable()
 export class FriendRequestsService {
@@ -79,6 +80,8 @@ export class FriendRequestsService {
 
     const userWhoSent = await this.userModel.findByPk(senderId);
     const userWhoReceive = await this.userModel.findByPk(receiverId);
+
+    if (senderId == receiverId) throw new CannotSendFriendRequestToYourself();
 
     const friends: User[] = await userWhoSent.$get('friends' as keyof User);
 
