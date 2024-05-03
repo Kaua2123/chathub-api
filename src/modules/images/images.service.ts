@@ -3,6 +3,7 @@ import { CONVERSATION_REPOSITORY, USERS_REPOSITORY } from 'src/constants';
 import { User } from '../users/user.model';
 import { Conversation } from '../conversations/conversation.model';
 import { UserNotFound } from '../users/errors/user-not-found';
+import { ConversationNotFound } from '../conversations/errors/conversation-not-found';
 
 @Injectable()
 export class ImagesService {
@@ -24,5 +25,18 @@ export class ImagesService {
     );
 
     return updatedUser;
+  }
+
+  async addGroupImage(@Param('id') id: number, file: Express.Multer.File) {
+    const conversation = await this.conversationModel.findByPk(id);
+
+    if (!conversation) throw new ConversationNotFound();
+
+    const updatedconversation = await conversation.update(
+      { image: file.filename },
+      { where: { image: '' } },
+    );
+
+    return updatedconversation;
   }
 }

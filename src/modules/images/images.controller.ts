@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Param,
   Put,
   UploadedFile,
@@ -14,9 +13,6 @@ import multerConfig from './multer-config';
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Get('/:name')
-  async getImageName() {}
-
   @Put('/addUserImage/:id')
   @UseInterceptors(FileInterceptor('image', multerConfig))
   async addUserImage(
@@ -24,5 +20,14 @@ export class ImagesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.imagesService.addUserImage(id, file);
+  }
+
+  @Put('/addGroupImage/:id')
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  async addGroupImage(
+    @Param('id') id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.imagesService.addGroupImage(id, file);
   }
 }

@@ -7,6 +7,7 @@ import {
   Default,
   PrimaryKey,
   Table,
+  AfterSave,
 } from 'sequelize-typescript';
 
 export type ConversationType = 'conversation' | 'group';
@@ -34,5 +35,18 @@ export class Conversation extends Model {
 
   @AllowNull(true)
   @Column
+  image: string;
+
+  @Column(DataType.VIRTUAL)
+  image_url: string;
+
+  @AllowNull(true)
+  @Column
   creator_id: number;
+
+  @AfterSave // apenas para o caso de conversation ser um group
+  static async addImageUrl(conversation: Conversation) {
+    const image = conversation.getDataValue('image');
+    if (image) conversation.image_url = `http://localhost:3000/images/${image}`;
+  }
 }
