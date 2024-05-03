@@ -18,6 +18,7 @@ import { Notification } from '../notifications/notification.model';
 import { BlockedUsers } from '../blocked-users/blocked-users.model';
 import { NotAllowed } from '../blocked-users/errors/not-allowed';
 import { Op } from 'sequelize';
+import { AlreadyFriends } from './errors/already-friends';
 
 @Injectable()
 export class FriendRequestsService {
@@ -74,12 +75,17 @@ export class FriendRequestsService {
   }
 
   async create(@Body() sendFriendRequestDto: SendFriendRequestDto) {
-    const { id, senderId, receiverId } = sendFriendRequestDto;
+    const { senderId, receiverId } = sendFriendRequestDto;
 
-    // id 2
-    const userWhoSent = await this.userModel.findByPk(senderId); // se ele ta na lista de block do de baixo
-    // id 4
+    const userWhoSent = await this.userModel.findByPk(senderId);
     const userWhoReceive = await this.userModel.findByPk(receiverId);
+
+    const friends: User[] = await userWhoSent.$get('friends' as keyof User);
+
+    // checa se, na lista de amigos do usuario que envia, há o id do usuario que recebe
+    friends.map((friend) => {
+      if (friend.id == receiverId) throw new AlreadyFriends();
+    });
 
     if (!userWhoSent || !userWhoReceive) throw new UserNotFound();
 
@@ -101,10 +107,8 @@ export class FriendRequestsService {
     if (blockedUser) throw new NotAllowed();
 
     const friendRequest = await this.friendRequestModel.create({
-      id,
       senderId,
       receiverId,
-      message: `Você enviou um pedido de amizade para ${userWhoReceive.username}`,
     });
 
     await this.notificationsModel.create({
