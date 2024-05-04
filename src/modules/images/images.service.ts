@@ -4,6 +4,7 @@ import { User } from '../users/user.model';
 import { Conversation } from '../conversations/conversation.model';
 import { UserNotFound } from '../users/errors/user-not-found';
 import { ConversationNotFound } from '../conversations/errors/conversation-not-found';
+import { FileNotSent } from './errors/file-not-sent';
 
 @Injectable()
 export class ImagesService {
@@ -18,6 +19,7 @@ export class ImagesService {
     const user = await this.userModel.findByPk(id);
 
     if (!user) throw new UserNotFound();
+    if (!file) throw new FileNotSent();
 
     const updatedUser = await user.update(
       { image: file.filename },
@@ -31,6 +33,7 @@ export class ImagesService {
     const conversation = await this.conversationModel.findByPk(id);
 
     if (!conversation) throw new ConversationNotFound();
+    if (!file) throw new FileNotSent();
 
     const updatedconversation = await conversation.update(
       { image: file.filename },
