@@ -1,21 +1,23 @@
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
-import { BlockedUsersService } from './blocked-users.service';
 import { BlockUserDto } from './dto/block-user-dto';
+import { BlockedUsersRepository } from './repositories/blocked-users-repository';
 
 @Controller('/blockedUsers')
 export class BlockedUsersController {
-  constructor(private readonly blockedUsersService: BlockedUsersService) {}
+  constructor(
+    private readonly blockedUsersRepository: BlockedUsersRepository,
+  ) {}
 
   @Post('/blockUser/:id')
   async blockUserById(
     @Param('id') id: number,
     @Body() blockUserDto: BlockUserDto,
   ) {
-    return this.blockedUsersService.blockUserById(id, blockUserDto);
+    return this.blockedUsersRepository.blockUserById(id, blockUserDto);
   }
 
   @Delete('/unblockUser/:id')
   async unblockUserById(@Param('id') id: number) {
-    return this.blockedUsersService.unblockUserById(id);
+    return this.blockedUsersRepository.unblockUserById(id);
   }
 }

@@ -6,16 +6,15 @@ import { usersProviders } from '../users/users.providers';
 import { ConversationsService } from './conversations.service';
 import { conversationsProviders } from './conversations.providers';
 import { blockedUsersProviders } from '../blocked-users/blocked-users-providers';
-import { BlockedUsersModule } from '../blocked-users/blocked-users.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, BlockedUsersModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [ConversationsController],
   providers: [
     ConversationsService,
     ...conversationsProviders,
     ...usersProviders,
-    ...blockedUsersProviders,
+    blockedUsersProviders[0],
   ],
   exports: [],
 })
