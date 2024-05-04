@@ -3,6 +3,9 @@ import { BLOCKED_USERS_REPOSITORY, USERS_REPOSITORY } from 'src/constants';
 import { BlockedUsers } from './blocked-users.model';
 import { User } from '../users/user.model';
 import { BlockUserDto } from './dto/block-user-dto';
+import { UserNotFound } from '../users/errors/user-not-found';
+import { CannotBlockYourself } from './errors/cannot-block-yourself';
+import { UserAlreadyBlocked } from './errors/user-already-blocked';
 
 @Injectable()
 export class BlockedUsersService {
@@ -18,6 +21,18 @@ export class BlockedUsersService {
     @Body() blockUserDto: BlockUserDto,
   ) {
     const user = await this.userModel.findByPk(id);
+
+    if (!user) throw new UserNotFound();
+    if (blockUserDto.user_who_blocked_id == id) throw new CannotBlockYourself();
+
+    const isUserAlreadyBlocked = await this.blockedUserModel.findOne({
+      where: {
+        user_who_blocked_id: blockUserDto.user_who_blocked_id,
+        UserId: user.id,
+      },
+    });
+
+    if (isUserAlreadyBlocked) throw new UserAlreadyBlocked();
 
     const blockedUser = await this.blockedUserModel.create({
       user_who_blocked_id: blockUserDto.user_who_blocked_id,
