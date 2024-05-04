@@ -16,6 +16,9 @@ import { ConversationsController } from './modules/conversations/conversations.c
 import { ImagesModule } from './modules/images/images.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { BlockedUsersController } from './modules/blocked-users/blocked-users.controller';
+import { MessagesController } from './modules/messages/messages.controller';
+import { ImagesController } from './modules/images/images.controller';
 
 @Module({
   imports: [
@@ -44,9 +47,12 @@ export class AppModule implements NestModule {
       .exclude('user/create', 'user')
       .forRoutes(
         UsersController,
+        BlockedUsersController,
         FriendRequestsController,
         FriendsController,
         ConversationsController,
+        MessagesController,
+        ImagesController,
       );
   }
 }
