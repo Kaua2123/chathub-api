@@ -11,6 +11,7 @@ import { UserNotFound } from '../users/errors/user-not-found';
 import { BlockedUsers } from '../blocked-users/blocked-users.model';
 import { NotAllowed } from '../blocked-users/errors/not-allowed';
 import { Op } from 'sequelize';
+import { CannotCreateAConversationWithYourself } from './errors/cannot-create-a-conversation-with-yourself';
 
 @Injectable()
 export class ConversationsService {
@@ -41,6 +42,8 @@ export class ConversationsService {
     const user_invited = await this.userModel.findByPk(user_invited_id);
 
     if (!user_creator || !user_invited) throw new UserNotFound();
+    if (user_creator_id == user_invited_id)
+      throw new CannotCreateAConversationWithYourself();
 
     const blockedUser = await this.blockedUserModel.findOne({
       where: {
