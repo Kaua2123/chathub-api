@@ -5,7 +5,7 @@ import { FriendsRepository } from './repositories/friends-repository';
 export class FriendsController {
   constructor(private readonly friendsRepository: FriendsRepository) {}
 
-  @Get('/friends/:id')
+  @Get('/getUserFriends/:id')
   async getUserFriends(@Param('id') id: number) {
     return this.friendsRepository.getUserFriends(id);
   }

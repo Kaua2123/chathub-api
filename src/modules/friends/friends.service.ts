@@ -19,12 +19,9 @@ export class FriendsService {
 
     if (!user) throw new UserNotFound();
 
-    const friends = await this.userModel.findAll({
-      where: { id },
-      attributes: ['username', 'image', 'is_online'],
-    });
+    const friends = await user.$get('friends' as keyof User);
 
-    if (!friends) throw new FriendsNotFound();
+    if (!friends || friends.length <= 0) throw new FriendsNotFound();
 
     return friends;
   }
