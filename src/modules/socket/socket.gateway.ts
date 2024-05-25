@@ -21,8 +21,10 @@ export class SocketGateway
   private logger: Logger = new Logger('SocketGateway');
 
   @SubscribeMessage('msg') // client envia algo pro server, a partir disso, o server emite isso pra todos os users
-  handleTest(socket: Socket, payload: string) {
+  handleMessage(socket: Socket, payload: string) {
+    // socket.broadcast.emit('msg', payload, socket.id);
     this.server.emit('msg', payload, socket.id);
+    console.log('msg:', payload);
   }
 
   afterInit() {
