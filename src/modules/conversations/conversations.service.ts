@@ -6,12 +6,14 @@ import {
 import { Inject, Injectable, Param } from '@nestjs/common';
 import { User } from '../users/user.model';
 import { Conversation } from './conversation.model';
+import { BlockedUsers } from '../blocked-users/blocked-users.model';
+import { Op } from 'sequelize';
+
+import { NotAllowed } from '../blocked-users/errors/not-allowed';
 import { ConversationNotFound } from './errors/conversation-not-found';
 import { UserNotFound } from '../users/errors/user-not-found';
-import { BlockedUsers } from '../blocked-users/blocked-users.model';
-import { NotAllowed } from '../blocked-users/errors/not-allowed';
-import { Op } from 'sequelize';
 import { CannotCreateAConversationWithYourself } from './errors/cannot-create-a-conversation-with-yourself';
+import { ConversationAlreadyExists } from './errors/conversation-already-exists';
 
 @Injectable()
 export class ConversationsService {
@@ -62,6 +64,16 @@ export class ConversationsService {
 
     if (blockedUser) throw new NotAllowed();
 
+    const conversations: Conversation[] = await user_creator.$get(
+      'conversations' as keyof User,
+    );
+
+    conversations.map((conversation) => {
+      console.log(conversation.participants);
+      if (conversation.$has('user', user_invited.id))
+        throw new ConversationAlreadyExists();
+    });
+
     const conversation = await this.conversationModel.create({
       creator_id: user_creator_id,
     });
@@ -70,6 +82,8 @@ export class ConversationsService {
 
     await user_creator.$add('conversation', conversation);
     await user_invited.$add('conversation', conversation);
+
+    conversation.participants = [user_creator.username, user_invited.username];
 
     return {
       message: `Nova conversa criada com ${user_creator.username} e ${user_invited.username}`,

@@ -30,8 +30,8 @@ export class Conversation extends Model {
   name: string;
 
   @AllowNull(true)
-  @Column
-  participants: string;
+  @Column(DataType.ARRAY(DataType.STRING))
+  participants: string[];
 
   @AllowNull(true)
   @Column
