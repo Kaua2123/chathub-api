@@ -69,7 +69,6 @@ export class ConversationsService {
     );
 
     conversations.map((conversation) => {
-      console.log(conversation.participants);
       if (conversation.$has('user', user_invited.id))
         throw new ConversationAlreadyExists();
     });
