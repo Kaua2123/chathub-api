@@ -64,25 +64,33 @@ export class ConversationsService {
 
     if (blockedUser) throw new NotAllowed();
 
-    const conversations: Conversation[] = await user_creator.$get(
-      'conversations' as keyof User,
-    );
-
-    conversations.map((conversation) => {
-      if (conversation.$has('user', user_invited.id))
-        throw new ConversationAlreadyExists();
+    const hasConversation = await this.conversationModel.findOne({
+      where: {
+        [Op.or]: [
+          {
+            creator_id: user_creator_id,
+            invited_id: user_invited_id,
+          },
+          {
+            creator_id: user_invited_id,
+            invited_id: user_creator_id,
+          },
+        ],
+      },
     });
+
+    if (hasConversation) throw new ConversationAlreadyExists();
 
     const conversation = await this.conversationModel.create({
       creator_id: user_creator_id,
+      invited_id: user_invited_id,
+      participants: [user_creator.username, user_invited.username],
     });
 
     if (!conversation) throw new ConversationNotFound();
 
     await user_creator.$add('conversation', conversation);
     await user_invited.$add('conversation', conversation);
-
-    conversation.participants = [user_creator.username, user_invited.username];
 
     return {
       message: `Nova conversa criada com ${user_creator.username} e ${user_invited.username}`,

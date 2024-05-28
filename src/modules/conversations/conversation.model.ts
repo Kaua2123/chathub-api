@@ -44,6 +44,10 @@ export class Conversation extends Model {
   @Column
   creator_id: number;
 
+  @AllowNull(true)
+  @Column
+  invited_id: number;
+
   @AfterSave // apenas para o caso de conversation ser um group
   static async addImageUrl(conversation: Conversation) {
     const image = conversation.getDataValue('image');
