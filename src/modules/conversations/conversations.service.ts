@@ -29,7 +29,14 @@ export class ConversationsService {
   async getUserConversations(@Param('id') id: number) {
     const user = await this.userModel.findByPk(id);
 
-    const conversations = await user.$get('conversations' as keyof User);
+    const conversations = await user.$get('conversations' as keyof User, {
+      include: [
+        {
+          model: User,
+          attributes: ['username'],
+        },
+      ],
+    });
 
     if (!conversations) throw new ConversationNotFound();
 
