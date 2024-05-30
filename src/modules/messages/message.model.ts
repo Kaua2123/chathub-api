@@ -21,6 +21,10 @@ export class Message extends Model {
   @Column
   content: string;
 
+  @AllowNull(true)
+  @Column
+  is_sender: boolean;
+
   @AllowNull(false)
   @Default(false)
   @Column
