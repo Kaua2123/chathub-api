@@ -29,4 +29,9 @@ export class Message extends Model {
   @Default(false)
   @Column
   is_saved: boolean;
+
+  @AllowNull(false)
+  @Default(false)
+  @Column
+  is_updated: boolean;
 }

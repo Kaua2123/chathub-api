@@ -34,10 +34,11 @@ export class MessagesService {
   }
 
   async create(@Body() createMessageDto: CreateMessageDto) {
-    const { content, ConversationId, UserId } = createMessageDto;
+    const { content, is_sender, ConversationId, UserId } = createMessageDto;
 
     const message = await this.messageModel.create({
       content,
+      is_sender,
       ConversationId,
       UserId,
     });
