@@ -24,7 +24,11 @@ export class SocketGateway
   @SubscribeMessage('msg') // client envia algo pro server pelo canal msg, e aqui é recebido
   handleMessage(socket: Socket, payload: Message) {
     socket.broadcast.emit('receivedMsg', payload, socket.id);
-    // this.server.emit('msg', payload, socket.id);
+  }
+
+  @SubscribeMessage('typing')
+  handleTyping(socket: Socket, payload: boolean) {
+    socket.broadcast.emit('userTyping', payload);
   }
 
   afterInit() {
