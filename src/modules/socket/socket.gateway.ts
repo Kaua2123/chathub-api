@@ -31,6 +31,11 @@ export class SocketGateway
     socket.broadcast.emit('userTyping', payload);
   }
 
+  @SubscribeMessage('isOnline')
+  handleIsOnline(socket: Socket, payload: boolean) {
+    socket.broadcast.emit('userOnline', payload);
+  }
+
   afterInit() {
     this.logger.log('Initialized');
   }
