@@ -20,6 +20,7 @@ export class SocketGateway
 {
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('SocketGateway');
+  private users = {};
 
   @SubscribeMessage('msg') // client envia algo pro server pelo canal msg, e aqui é recebido
   handleMessage(socket: Socket, payload: Message) {
@@ -28,12 +29,13 @@ export class SocketGateway
 
   @SubscribeMessage('typing')
   handleTyping(socket: Socket, payload: boolean) {
-    socket.broadcast.emit('userTyping', payload);
+    socket.broadcast.emit('userTyping', payload, socket.id);
   }
 
   @SubscribeMessage('isOnline')
-  handleIsOnline(socket: Socket, payload: boolean) {
-    socket.broadcast.emit('userOnline', payload);
+  handleIsOnline(socket: Socket, payload) {
+    this.users[socket.id] = payload;
+    socket.broadcast.emit('userOnline', payload, socket.id);
   }
 
   afterInit() {
@@ -46,5 +48,7 @@ export class SocketGateway
 
   handleDisconnect(client: Socket) {
     this.logger.log('A user disconnected. user id:', client.id);
+
+    delete this.users[client.id];
   }
 }
