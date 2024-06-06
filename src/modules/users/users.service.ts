@@ -1,4 +1,11 @@
-import { Body, Param, Inject, Injectable } from '@nestjs/common';
+import {
+  Body,
+  Param,
+  Inject,
+  Injectable,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
@@ -45,7 +52,7 @@ export class UsersService {
   }
 
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    const { name, username, email, password } = updateUserDto;
+    const { name, username, email, password, is_online } = updateUserDto;
 
     if (!id) throw new MissingId();
 
@@ -53,11 +60,18 @@ export class UsersService {
 
     if (!user) throw new UserNotFound();
 
+    if (!name && !username && !email && !password && !is_online)
+      throw new HttpException(
+        'You must provide at least one field.',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+
     const updatedUser = await user.update({
       name,
       username,
       email,
       password,
+      is_online,
     });
 
     return updatedUser;

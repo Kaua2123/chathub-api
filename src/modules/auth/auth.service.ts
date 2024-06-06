@@ -29,11 +29,11 @@ export class AuthService {
     if (!user) throw new UserNotFound();
 
     const pass = await bcrypt.compare(password, user.password_hash);
-    const { id } = user;
+    const { id, is_online } = user;
 
     if (!pass) throw new PasswordsDoNotMatch();
 
-    const token = jwt.sign({ id }, process.env.TOKEN_KEY);
+    const token = jwt.sign({ id, is_online }, process.env.TOKEN_KEY);
     return { token };
   }
 }
