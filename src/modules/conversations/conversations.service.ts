@@ -43,6 +43,29 @@ export class ConversationsService {
     return conversations;
   }
 
+  async show(
+    @Param('user_id') user_id: number,
+    @Param('conversation_id') conversation_id: number,
+  ) {
+    const user = await this.userModel.findByPk(user_id);
+
+    const conversations = await user.$get('conversations' as keyof User, {
+      include: [
+        {
+          model: User,
+          attributes: ['username'],
+        },
+      ],
+      where: {
+        id: conversation_id,
+      },
+    });
+
+    if (!conversations) throw new ConversationNotFound();
+
+    return conversations;
+  }
+
   async create(
     @Param('user_creator_id') user_creator_id: number,
     @Param('user_invited_id') user_invited_id: number,

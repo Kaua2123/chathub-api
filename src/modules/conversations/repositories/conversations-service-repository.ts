@@ -11,6 +11,10 @@ export class ConversationServiceRepository implements ConversationsRepository {
     return this.conversationsService.getUserConversations(id);
   }
 
+  async show(user_id: number, conversation_id: number): Promise<Conversation> {
+    return this.conversationsService.show(user_id, conversation_id);
+  }
+
   async addMoreUsersToConversation(
     conversation_id: number,
     ...users_id: number[]

@@ -12,6 +12,14 @@ export class ConversationsController {
     return this.conversationsRepository.getUserConversations(id);
   }
 
+  @Get('/show/:user_id/:conversation_id')
+  async show(
+    @Param('user_id') user_id: number,
+    @Param('conversation_id') conversation_id: number,
+  ) {
+    return this.conversationsRepository.show(user_id, conversation_id);
+  }
+
   @Post('/create/:user_creator_id/:user_invited_id')
   async create(
     @Param('user_creator_id') user_creator_id: number,
