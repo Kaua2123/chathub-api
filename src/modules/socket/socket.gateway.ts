@@ -20,7 +20,7 @@ export class SocketGateway
 {
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('SocketGateway');
-  private users = {};
+  private users = [];
 
   @SubscribeMessage('msg') // client envia algo pro server pelo canal msg, e aqui é recebido
   handleMessage(socket: Socket, payload: Message) {
@@ -32,10 +32,20 @@ export class SocketGateway
     socket.broadcast.emit('userTyping', payload, socket.id);
   }
 
-  @SubscribeMessage('isOnline')
-  handleIsOnline(socket: Socket, payload) {
-    this.users[socket.id] = payload;
-    socket.broadcast.emit('userOnline', payload, socket.id);
+  @SubscribeMessage('newUser')
+  handleNewUser(socket: Socket, payload: number) {
+    // se chegou aqui, o usuario está online
+
+    const user = {
+      userId: payload,
+      socketId: socket.id,
+    };
+
+    // checa se o usuário com id recebido já está online a fim de impedir a adição deste no array de users
+    const alreadyHasUserId = this.users.some((user) => user.userId === payload);
+    !alreadyHasUserId && this.users.push(user);
+
+    socket.emit('onlineUsers', this.users);
   }
 
   afterInit() {
@@ -48,7 +58,5 @@ export class SocketGateway
 
   handleDisconnect(client: Socket) {
     this.logger.log('A user disconnected. user id:', client.id);
-
-    delete this.users[client.id];
   }
 }

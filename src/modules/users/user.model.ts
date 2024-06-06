@@ -52,7 +52,7 @@ export class User extends Model {
   @Column
   password_hash: string;
 
-  @Default(true)
+  @Default(false)
   @Column
   is_online: boolean;
 
