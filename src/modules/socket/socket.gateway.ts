@@ -45,8 +45,8 @@ export class SocketGateway
     const alreadyHasUserId = this.users.some((user) => user.userId === payload);
     !alreadyHasUserId && this.users.push(user);
 
-    socket.emit('onlineUsers', this.users);
     console.log(this.users);
+    this.emitOnlineUsers();
   }
 
   afterInit() {
@@ -60,9 +60,13 @@ export class SocketGateway
   handleDisconnect(client: Socket) {
     this.logger.log('A user disconnected. user id:', client.id);
 
-    const index = this.users.findIndex((user) => user.socketId !== client.id);
-    this.users = this.users.splice(index, 1);
+    // filtrando, onde o usuario tem o socket id difereente do client id (diferente do q desconectou)
+    // se tá diferente, é porquê desconectou.
+    this.users = this.users.filter((user) => user.socketId !== client.id);
+    this.emitOnlineUsers();
+  }
 
-    client.emit('onlineUsers', this.users);
+  private emitOnlineUsers() {
+    this.server.emit('onlineUsers', this.users);
   }
 }
