@@ -13,6 +13,10 @@ export class MessagesServiceRepository implements MessagesRepository {
     return this.messagesService.getMessagesOfAConversation(id);
   }
 
+  getLastMessageOfAConversation(id: number): Promise<Message> {
+    return this.messagesService.getLastMessageOfAConversation(id);
+  }
+
   show(id: number): Promise<Message> {
     return this.messagesService.show(id);
   }

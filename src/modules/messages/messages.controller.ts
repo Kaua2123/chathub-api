@@ -20,6 +20,11 @@ export class MessagesController {
     return this.messagesRepository.getMessagesOfAConversation(id);
   }
 
+  @Get('/getLastMessage/:id')
+  async getLastMessageOfAConversation(@Param('id') id: number) {
+    return this.messagesRepository.getLastMessageOfAConversation(id);
+  }
+
   @Get('/show/:id')
   async show(@Param('id') id: number) {
     return this.messagesRepository.show(id);

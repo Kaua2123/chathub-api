@@ -25,6 +25,19 @@ export class MessagesService {
     return messages;
   }
 
+  async getLastMessageOfAConversation(@Param('id') id: number) {
+    const messages = await this.messageModel.findAll({
+      where: { ConversationId: id },
+    });
+
+    if (!messages) throw new MessageNotFound();
+
+    const indexOfLastMessage = messages.length - 1;
+    const lastMessage = messages[indexOfLastMessage];
+
+    return lastMessage;
+  }
+
   async show(@Param('id') id: number) {
     const message = await this.messageModel.findByPk(id);
 
