@@ -59,6 +59,7 @@ export class MessagesService {
     const updatedMessage = await message.update({
       content: updateMessageDto.content,
       is_updated: updateMessageDto.is_updated,
+      is_deleted: updateMessageDto.is_deleted,
     });
 
     return updatedMessage;

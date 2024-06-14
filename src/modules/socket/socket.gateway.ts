@@ -49,6 +49,16 @@ export class SocketGateway
     this.emitOnlineUsers();
   }
 
+  @SubscribeMessage('deletedMsg')
+  handleDeletedMsg(socket: Socket, payload: boolean) {
+    this.server.emit('msgDeleted', payload, socket.id);
+  }
+
+  @SubscribeMessage('updatedMsg')
+  handleUpdatedMsg(socket: Socket, payload: boolean) {
+    this.server.emit('msgUpdated', payload, socket.id);
+  }
+
   afterInit() {
     this.logger.log('Initialized');
   }
