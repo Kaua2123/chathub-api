@@ -39,4 +39,9 @@ export class Message extends Model {
   @Default(false)
   @Column
   is_deleted: boolean;
+
+  @AllowNull(false)
+  @Default(false)
+  @Column
+  is_read: boolean;
 }

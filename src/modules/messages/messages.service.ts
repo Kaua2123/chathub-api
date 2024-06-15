@@ -38,6 +38,8 @@ export class MessagesService {
     return lastMessage;
   }
 
+  // async getUnreadMessagesOfAConversation(@Param('id') id: number) {}
+
   async show(@Param('id') id: number) {
     const message = await this.messageModel.findByPk(id);
 
@@ -73,6 +75,7 @@ export class MessagesService {
       content: updateMessageDto.content,
       is_updated: updateMessageDto.is_updated,
       is_deleted: updateMessageDto.is_deleted,
+      is_read: updateMessageDto.is_read,
     });
 
     return updatedMessage;

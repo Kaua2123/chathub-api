@@ -27,6 +27,8 @@ export class SocketGateway
     socket.broadcast.emit('receivedMsg', payload, socket.id);
   }
 
+  // handleNewMessage -> sempre que tiver uma mensagem não lida, emitir um evento pra cá
+
   @SubscribeMessage('typing')
   handleTyping(socket: Socket, payload: boolean) {
     socket.broadcast.emit('userTyping', payload, socket.id);
