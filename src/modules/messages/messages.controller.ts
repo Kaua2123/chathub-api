@@ -25,9 +25,15 @@ export class MessagesController {
     return this.messagesRepository.getLastMessageOfAConversation(id);
   }
 
-  @Get('/getUnreadMessages/:id')
-  async getUnreadMessagesOfAConversation(@Param('id') id: number) {
-    return this.messagesRepository.getUnreadMessagesOfAConversation(id);
+  @Get('/getUnreadMessages/:conversation_id/:user_id')
+  async hasUnreadMessagesOnAConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('user_id') user_id: number,
+  ) {
+    return this.messagesRepository.hasUnreadMessagesOnAConversation(
+      conversation_id,
+      user_id,
+    );
   }
 
   @Get('/show/:id')

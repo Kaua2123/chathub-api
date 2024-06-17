@@ -6,6 +6,7 @@ import {
   AllowNull,
   Table,
   Default,
+  DataType,
 } from 'sequelize-typescript';
 
 @Table({ timestamps: true })
@@ -41,7 +42,7 @@ export class Message extends Model {
   is_deleted: boolean;
 
   @AllowNull(false)
-  @Default(false)
-  @Column
-  is_read: boolean;
+  @Default([])
+  @Column(DataType.JSON)
+  is_read_by: string[];
 }

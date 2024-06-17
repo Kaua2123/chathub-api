@@ -38,12 +38,23 @@ export class MessagesService {
     return lastMessage;
   }
 
-  async getUnreadMessagesOfAConversation(@Param('id') id: number) {
+  async hasUnreadMessagesOnAConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('user_id') user_id: number,
+  ) {
     const messages = await this.messageModel.findAll({
-      where: { ConversationId: id, is_read: false },
+      where: {
+        ConversationId: conversation_id,
+      },
     });
 
     if (!messages) throw new MessageNotFound();
+
+    const hasUnreadMessages = messages.some(
+      (message) => !message.is_read_by.includes(user_id.toString()),
+    );
+
+    if (!hasUnreadMessages) return [];
 
     return messages;
   }
@@ -57,14 +68,18 @@ export class MessagesService {
   }
 
   async create(@Body() createMessageDto: CreateMessageDto) {
-    const { content, is_sender, ConversationId, UserId } = createMessageDto;
+    const { content, is_sender, is_read_by, ConversationId, UserId } =
+      createMessageDto;
 
     const message = await this.messageModel.create({
       content,
       is_sender,
+      is_read_by,
       ConversationId,
       UserId,
     });
+
+    // aletar o usuario de novas mensgens DO OUTRO USUARIO
 
     if (!message) throw new MessageNotFound();
 
