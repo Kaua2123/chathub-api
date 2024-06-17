@@ -50,13 +50,13 @@ export class MessagesService {
 
     if (!messages) throw new MessageNotFound();
 
-    const hasUnreadMessages = messages.some(
+    const unreadMessages = messages.filter(
       (message) => !message.is_read_by.includes(user_id.toString()),
     );
 
-    if (!hasUnreadMessages) return [];
+    if (!unreadMessages) return [];
 
-    return messages;
+    return unreadMessages;
   }
 
   async show(@Param('id') id: number) {
