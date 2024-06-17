@@ -5,6 +5,7 @@ import { Message } from '../message.model';
 export abstract class MessagesRepository {
   abstract getMessagesOfAConversation(id: number): Promise<Message[]>;
   abstract getLastMessageOfAConversation(id: number): Promise<Message>;
+  abstract getUnreadMessagesOfAConversation(id: number): Promise<Message[]>;
   abstract show(id: number): Promise<Message>;
   abstract create(createMessageDto: CreateMessageDto): Promise<Message>;
 

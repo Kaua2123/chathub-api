@@ -25,6 +25,11 @@ export class MessagesController {
     return this.messagesRepository.getLastMessageOfAConversation(id);
   }
 
+  @Get('/getUnreadMessages/:id')
+  async getUnreadMessagesOfAConversation(@Param('id') id: number) {
+    return this.messagesRepository.getUnreadMessagesOfAConversation(id);
+  }
+
   @Get('/show/:id')
   async show(@Param('id') id: number) {
     return this.messagesRepository.show(id);
