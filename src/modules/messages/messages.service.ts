@@ -59,6 +59,34 @@ export class MessagesService {
     return unreadMessages;
   }
 
+  async readAllUnreadMessagesOfAConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Param('user_id') user_id: number,
+  ) {
+    const messages = await this.messageModel.findAll({
+      where: {
+        ConversationId: conversation_id,
+      },
+    });
+
+    messages.map(async (message) => {
+      const read_by_array: number[] = JSON.parse(message.is_read_by);
+      if (read_by_array.includes(user_id)) return 'Messages are already read';
+
+      read_by_array.push(user_id);
+
+      const read_by_stringify = JSON.stringify(read_by_array);
+
+      await message.update({
+        is_read_by: read_by_stringify,
+      });
+    });
+
+    if (!messages) throw new MessageNotFound();
+
+    return messages;
+  }
+
   async show(@Param('id') id: number) {
     const message = await this.messageModel.findByPk(id);
 
@@ -98,7 +126,6 @@ export class MessagesService {
       content: updateMessageDto.content,
       is_updated: updateMessageDto.is_updated,
       is_deleted: updateMessageDto.is_deleted,
-      is_read: updateMessageDto.is_read,
     });
 
     return updatedMessage;

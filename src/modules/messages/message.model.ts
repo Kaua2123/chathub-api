@@ -44,5 +44,5 @@ export class Message extends Model {
   @AllowNull(false)
   @Default([])
   @Column(DataType.JSON)
-  is_read_by: string[];
+  is_read_by: string;
 }

@@ -24,6 +24,16 @@ export class MessagesServiceRepository implements MessagesRepository {
     return this.messagesService.hasUnreadMessagesOnAConversation(id, user_id);
   }
 
+  readUnreadMessagesOfAConversation(
+    conversation_id: number,
+    user_id: number,
+  ): Promise<Message[]> {
+    return this.messagesService.readAllUnreadMessagesOfAConversation(
+      conversation_id,
+      user_id,
+    );
+  }
+
   show(id: number): Promise<Message> {
     return this.messagesService.show(id);
   }

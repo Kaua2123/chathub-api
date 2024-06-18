@@ -11,6 +11,11 @@ export abstract class MessagesRepository {
     user_id: number,
   ): Promise<Message[]>;
 
+  abstract readUnreadMessagesOfAConversation(
+    conversation_id: number,
+    user_id: number,
+  ): Promise<Message[]>;
+
   abstract show(id: number): Promise<Message>;
   abstract create(createMessageDto: CreateMessageDto): Promise<Message>;
 
