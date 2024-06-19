@@ -29,6 +29,8 @@ export class ConversationsService {
   async getUserConversations(@Param('id') id: number) {
     const user = await this.userModel.findByPk(id);
 
+    if (!user) throw new UserNotFound();
+
     const conversations = await user.$get('conversations' as keyof User, {
       include: [
         {

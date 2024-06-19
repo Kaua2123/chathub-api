@@ -61,6 +61,11 @@ export class SocketGateway
     this.server.emit('msgUpdated', payload, socket.id);
   }
 
+  @SubscribeMessage('readMsg')
+  handleReadMsg(socket: Socket, payload) {
+    this.server.emit('msgRead', payload, socket.id);
+  }
+
   afterInit() {
     this.logger.log('Initialized');
   }
