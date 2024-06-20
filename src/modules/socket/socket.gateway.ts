@@ -62,8 +62,13 @@ export class SocketGateway
   }
 
   @SubscribeMessage('readMsg')
-  handleReadMsg(socket: Socket, payload) {
+  handleReadMsg(socket: Socket, payload: Message[]) {
     this.server.emit('msgRead', payload, socket.id);
+  }
+
+  @SubscribeMessage('unreadMsgs')
+  handleUnreadMsgs(socket: Socket, payload: Message[]) {
+    this.server.emit('unreadMsgsCounter', payload, socket.id);
   }
 
   afterInit() {
