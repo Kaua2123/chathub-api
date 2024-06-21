@@ -71,6 +71,11 @@ export class SocketGateway
     this.server.emit('unreadMsgsCounter', payload, socket.id);
   }
 
+  @SubscribeMessage('lastMsg')
+  handleLastMsg(socket: Socket, payload: Message[]) {
+    this.server.emit('newLastMsg', payload, socket.id);
+  }
+
   afterInit() {
     this.logger.log('Initialized');
   }
