@@ -23,21 +23,19 @@ export class SocketGateway
   private users = [];
 
   @SubscribeMessage('msg') // client envia algo pro server pelo canal msg, e aqui é recebido
-  handleMessage(socket: Socket, payload: Message) {
-    socket.broadcast.emit('receivedMsg', payload, socket.id);
+  handleMessage(socket: Socket, payload) {
+    socket.broadcast.to(payload[1]).emit('receivedMsg', payload, socket.id);
   }
-
   // handleNewMessage -> sempre que tiver uma mensagem não lida, emitir um evento pra cá
 
   @SubscribeMessage('typing')
-  handleTyping(socket: Socket, payload: boolean) {
-    socket.broadcast.emit('userTyping', payload, socket.id);
+  handleTyping(socket: Socket, payload) {
+    socket.broadcast.to(payload[1]).emit('userTyping', payload, socket.id);
   }
 
   @SubscribeMessage('newUser')
   handleNewUser(socket: Socket, payload: number) {
     // se chegou aqui, o usuario está online
-
     const user = {
       userId: payload,
       socketId: socket.id,
