@@ -65,8 +65,8 @@ export class SocketGateway
   }
 
   @SubscribeMessage('unreadMsgs')
-  handleUnreadMsgs(socket: Socket, payload: Message[]) {
-    this.server.emit('unreadMsgsCounter', payload, socket.id);
+  handleUnreadMsgs(socket: Socket, payload) {
+    this.server.to(payload[1]).emit('unreadMsgsCounter', payload, socket.id);
   }
 
   @SubscribeMessage('lastMsg')
