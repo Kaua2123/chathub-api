@@ -70,8 +70,8 @@ export class SocketGateway
   }
 
   @SubscribeMessage('lastMsg')
-  handleLastMsg(socket: Socket, payload: Message[]) {
-    this.server.emit('newLastMsg', payload, socket.id);
+  handleLastMsg(socket: Socket, payload) {
+    this.server.to(payload[1]).emit('newLastMsg', payload, socket.id);
   }
 
   afterInit() {
