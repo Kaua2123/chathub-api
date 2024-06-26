@@ -36,7 +36,7 @@ export class ConversationsService {
       include: [
         {
           model: User,
-          attributes: ['username'],
+          attributes: ['id', 'username', 'image'],
         },
       ],
     });
@@ -56,7 +56,7 @@ export class ConversationsService {
       include: [
         {
           model: User,
-          attributes: ['username'],
+          attributes: ['id', 'username', 'image'],
         },
       ],
       where: {
@@ -159,9 +159,8 @@ export class ConversationsService {
       conversationParticipantsArray.push(user.username);
     });
 
-    const conversationParticipantsString = JSON.stringify(
-      conversationParticipantsArray,
-    );
+    const conversationParticipantsString =
+      conversationParticipantsArray.toString();
 
     await conversation.update(
       { type: 'Group', participants: conversationParticipantsString },
