@@ -31,7 +31,7 @@ export class Conversation extends Model {
 
   @AllowNull(true)
   @Column(DataType.JSON)
-  participants: string[];
+  participants: string;
 
   @AllowNull(true)
   @Column

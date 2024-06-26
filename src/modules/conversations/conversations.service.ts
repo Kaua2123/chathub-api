@@ -14,6 +14,7 @@ import { ConversationNotFound } from './errors/conversation-not-found';
 import { UserNotFound } from '../users/errors/user-not-found';
 import { CannotCreateAConversationWithYourself } from './errors/cannot-create-a-conversation-with-yourself';
 import { ConversationAlreadyExists } from './errors/conversation-already-exists';
+import { UserAlreadyInConversation } from './errors/user-already-in-conversation';
 
 @Injectable()
 export class ConversationsService {
@@ -145,9 +146,25 @@ export class ConversationsService {
     if (!users) throw new UserNotFound();
 
     conversation.$add('user', users);
+    const conversationParticipants = conversation.participants;
+    const conversationParticipantsArray: string[] = JSON.parse(
+      conversationParticipants,
+    );
+
+    users.map((user) => {
+      if (conversationParticipantsArray.includes(user.username)) {
+        throw new UserAlreadyInConversation();
+      }
+
+      conversationParticipantsArray.push(user.username);
+    });
+
+    const conversationParticipantsString = JSON.stringify(
+      conversationParticipantsArray,
+    );
 
     await conversation.update(
-      { type: 'Group' },
+      { type: 'Group', participants: conversationParticipantsString },
       { where: { type: 'Conversation' } },
     );
 
