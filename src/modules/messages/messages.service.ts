@@ -70,15 +70,22 @@ export class MessagesService {
     });
 
     messages.map(async (message) => {
-      const read_by_array: number[] = JSON.parse(message.is_read_by);
-      if (read_by_array.includes(user_id)) return 'Messages are already read';
+      const splited = Array.from(message.is_read_by);
 
-      read_by_array.push(user_id);
+      const read_by_array = splited.filter(
+        (element) => element !== '"' && element !== ',',
+      );
 
-      const read_by_stringify = JSON.stringify(read_by_array);
+      if (read_by_array.includes(user_id.toString()))
+        return 'Messages are already read';
+      console.log(read_by_array);
+
+      read_by_array.push(user_id.toString());
+
+      const read_by_string = read_by_array.toString();
 
       await message.update({
-        is_read_by: read_by_stringify,
+        is_read_by: read_by_string,
       });
     });
 
