@@ -70,15 +70,13 @@ export class MessagesService {
     });
 
     messages.map(async (message) => {
-      const splited = Array.from(message.is_read_by);
+      console.log(message.is_read_by);
 
-      const read_by_array = splited.filter(
-        (element) => element !== '"' && element !== ',',
-      );
+      const replaced = message.is_read_by.replaceAll('"', '');
+      const read_by_array = replaced.split(',');
 
       if (read_by_array.includes(user_id.toString()))
         return 'Messages are already read';
-      console.log(read_by_array);
 
       read_by_array.push(user_id.toString());
 
