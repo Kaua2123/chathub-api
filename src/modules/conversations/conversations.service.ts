@@ -103,10 +103,12 @@ export class ConversationsService {
           {
             creator_id: user_creator_id,
             invited_id: user_invited_id,
+            type: 'conversation',
           },
           {
             creator_id: user_invited_id,
             invited_id: user_creator_id,
+            type: 'conversation',
           },
         ],
       },
@@ -114,10 +116,12 @@ export class ConversationsService {
 
     if (hasConversation) throw new ConversationAlreadyExists();
 
+    const participantsArray = [user_creator.username, user_invited.username];
+
     const conversation = await this.conversationModel.create({
       creator_id: user_creator_id,
       invited_id: user_invited_id,
-      participants: [user_creator.username, user_invited.username],
+      participants: participantsArray.toString(),
     });
 
     if (!conversation) throw new ConversationNotFound();
@@ -145,11 +149,8 @@ export class ConversationsService {
 
     if (!users) throw new UserNotFound();
 
-    conversation.$add('user', users);
-    const conversationParticipants = conversation.participants;
-    const conversationParticipantsArray: string[] = JSON.parse(
-      conversationParticipants,
-    );
+    const replaced = conversation.participants.replaceAll('"', '');
+    const conversationParticipantsArray = replaced.split(',');
 
     users.map((user) => {
       if (conversationParticipantsArray.includes(user.username)) {
@@ -166,6 +167,8 @@ export class ConversationsService {
       { type: 'Group', participants: conversationParticipantsString },
       { where: { type: 'Conversation' } },
     );
+
+    conversation.$add('user', users);
 
     return {
       message: `Usuários adicionados: ${users.map((user) => user.username)}`,
@@ -186,6 +189,24 @@ export class ConversationsService {
     });
 
     if (!users) throw new UserNotFound();
+
+    const replaced = conversation.participants.replaceAll('"', '');
+    const conversationParticipantsArray = replaced.split(',');
+
+    users.map((user) => {
+      const index = conversationParticipantsArray.findIndex(
+        (value) => value === user.username,
+      );
+
+      conversationParticipantsArray.splice(index, 1);
+    });
+
+    const conversationParticipantsString =
+      conversationParticipantsArray.toString();
+
+    await conversation.update({
+      participants: conversationParticipantsString,
+    });
 
     conversation.$remove('user', users);
 
