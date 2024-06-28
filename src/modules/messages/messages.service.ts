@@ -70,8 +70,6 @@ export class MessagesService {
     });
 
     messages.map(async (message) => {
-      console.log(message.is_read_by);
-
       const replaced = message.is_read_by.replaceAll('"', '');
       const read_by_array = replaced.split(',');
 

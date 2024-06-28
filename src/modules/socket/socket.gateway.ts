@@ -24,13 +24,23 @@ export class SocketGateway
 
   @SubscribeMessage('msg') // client envia algo pro server pelo canal msg, e aqui é recebido
   handleMessage(socket: Socket, payload) {
+    console.log('MESSAGE: ', payload[1]);
     socket.broadcast.to(payload[1]).emit('receivedMsg', payload, socket.id);
   }
-  // handleNewMessage -> sempre que tiver uma mensagem não lida, emitir um evento pra cá
 
   @SubscribeMessage('typing')
   handleTyping(socket: Socket, payload) {
     socket.broadcast.to(payload[1]).emit('userTyping', payload, socket.id);
+  }
+
+  @SubscribeMessage('typingInGroup')
+  handleTypingInGroup(socket: Socket, payload: any[]) {
+    console.log('TYPING GROUUP', payload[1]);
+    payload[1].map((element) => {
+      socket.broadcast
+        .to(element.socketId)
+        .emit('userTypingInGroup', payload, socket.id);
+    });
   }
 
   @SubscribeMessage('newUser')
