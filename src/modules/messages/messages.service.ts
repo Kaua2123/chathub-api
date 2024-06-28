@@ -5,6 +5,7 @@ import { CreateMessageDto } from './dtos/create-message-dto';
 import { UpdateMessageDto } from './dtos/update-message-dto';
 import { MessageNotFound } from './errors/message-not-found';
 import { Notification } from '../notifications/notification.model';
+import { User } from '../users/user.model';
 
 @Injectable()
 export class MessagesService {
@@ -18,6 +19,10 @@ export class MessagesService {
   async getMessagesOfAConversation(@Param('id') id: number) {
     const messages = await this.messageModel.findAll({
       where: { ConversationId: id },
+      include: {
+        model: User,
+        attributes: ['username'],
+      },
     });
 
     if (!messages) throw new MessageNotFound();
@@ -28,6 +33,10 @@ export class MessagesService {
   async getLastMessageOfAConversation(@Param('id') id: number) {
     const messages = await this.messageModel.findAll({
       where: { ConversationId: id },
+      include: {
+        model: User,
+        attributes: ['username'],
+      },
     });
 
     if (!messages) throw new MessageNotFound();
