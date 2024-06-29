@@ -4,6 +4,7 @@ export class CreateMessageDto {
   content: string;
   is_sender: boolean;
   is_read_by: string;
+  username: string;
 
   @IsNotEmpty()
   ConversationId: number;

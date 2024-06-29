@@ -108,7 +108,7 @@ export class MessagesService {
   }
 
   async create(@Body() createMessageDto: CreateMessageDto) {
-    const { content, is_sender, is_read_by, ConversationId, UserId } =
+    const { content, is_sender, is_read_by, username, ConversationId, UserId } =
       createMessageDto;
 
     const message = await this.messageModel.create({
@@ -116,10 +116,9 @@ export class MessagesService {
       is_sender,
       is_read_by,
       ConversationId,
+      username,
       UserId,
     });
-
-    // aletar o usuario de novas mensgens DO OUTRO USUARIO
 
     if (!message) throw new MessageNotFound();
 

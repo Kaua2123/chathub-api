@@ -22,6 +22,11 @@ export class Message extends Model {
   @Column
   content: string;
 
+  @AllowNull(false)
+  @Default('')
+  @Column
+  username: string;
+
   @AllowNull(true)
   @Column
   is_sender: boolean;

@@ -28,6 +28,21 @@ export class SocketGateway
     socket.broadcast.to(payload[1]).emit('receivedMsg', payload, socket.id);
   }
 
+  @SubscribeMessage('msgInGroup') // client envia algo pro server pelo canal msg, e aqui é recebido
+  handleMessageInGroup(socket: Socket, payload) {
+    console.log('MESSAGE GROUP: ', payload[1]);
+    console.log('SENDER USERNAME MESSAGE: ', payload[2]);
+    payload[1].map((element) => {
+      socket.broadcast
+        .to(element.socketId)
+        .emit('receivedMsgInGroup', payload, socket.id);
+    });
+
+    socket.broadcast
+      .to(payload[1])
+      .emit('receivedMsgInGroup', payload, socket.id);
+  }
+
   @SubscribeMessage('typing')
   handleTyping(socket: Socket, payload) {
     socket.broadcast.to(payload[1]).emit('userTyping', payload, socket.id);
@@ -35,7 +50,6 @@ export class SocketGateway
 
   @SubscribeMessage('typingInGroup')
   handleTypingInGroup(socket: Socket, payload: any[]) {
-    console.log('TYPING GROUUP', payload[1]);
     payload[1].map((element) => {
       socket.broadcast
         .to(element.socketId)
