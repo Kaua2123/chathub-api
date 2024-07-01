@@ -8,7 +8,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Message } from '../messages/message.model';
 
 @WebSocketGateway({
   cors: {
@@ -84,8 +83,13 @@ export class SocketGateway
   }
 
   @SubscribeMessage('readMsg')
-  handleReadMsg(socket: Socket, payload: Message[]) {
+  handleReadMsg(socket: Socket, payload) {
     this.server.emit('msgRead', payload, socket.id);
+  }
+
+  @SubscribeMessage('readMsgInGroup')
+  handleReadMsgInGroup(socket: Socket, payload) {
+    this.server.emit('msgReadInGroup', payload, socket.id);
   }
 
   @SubscribeMessage('unreadMsgs')
