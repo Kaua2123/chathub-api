@@ -36,6 +36,17 @@ export class MessagesController {
     );
   }
 
+  @Get('/getUnreadMessagesInAGroup/:conversation_id/:users_id')
+  async hasUnreadMessagesInAGroup(
+    @Param('conversation_id') conversation_id: number,
+    @Param('users_id') ...users_id: number[]
+  ) {
+    return this.messagesRepository.hasUnreadMessagesInAGroup(
+      conversation_id,
+      ...users_id,
+    );
+  }
+
   @Put('/readAllUnreadMessages/:conversation_id/:user_id')
   async readUnreadMessagesOfAConversation(
     @Param('conversation_id') conversation_id: number,

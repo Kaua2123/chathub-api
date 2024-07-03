@@ -29,17 +29,11 @@ export class SocketGateway
 
   @SubscribeMessage('msgInGroup') // client envia algo pro server pelo canal msg, e aqui é recebido
   handleMessageInGroup(socket: Socket, payload) {
-    console.log('MESSAGE GROUP: ', payload[1]);
-    console.log('SENDER USERNAME MESSAGE: ', payload[2]);
     payload[1].map((element) => {
       socket.broadcast
         .to(element.socketId)
         .emit('receivedMsgInGroup', payload, socket.id);
     });
-
-    socket.broadcast
-      .to(payload[1])
-      .emit('receivedMsgInGroup', payload, socket.id);
   }
 
   @SubscribeMessage('typing')
@@ -95,6 +89,18 @@ export class SocketGateway
   @SubscribeMessage('unreadMsgs')
   handleUnreadMsgs(socket: Socket, payload) {
     this.server.to(payload[1]).emit('unreadMsgsCounter', payload, socket.id);
+  }
+
+  @SubscribeMessage('unreadMsgsInGroup')
+  handleUnreadMsgsInGroup(socket: Socket, payload: any[]) {
+    console.log('payload: ', payload);
+
+    payload[1].map((element) => {
+      if (element.socketId)
+        socket.broadcast
+          .to(element.socketId)
+          .emit('unreadMsgsCounterInGroup', payload, socket.id);
+    });
   }
 
   @SubscribeMessage('lastMsg')

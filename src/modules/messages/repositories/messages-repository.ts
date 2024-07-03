@@ -11,6 +11,11 @@ export abstract class MessagesRepository {
     user_id: number,
   ): Promise<Message[]>;
 
+  abstract hasUnreadMessagesInAGroup(
+    conversation_id: number,
+    ...users_id: number[]
+  ): Promise<object[]>;
+
   abstract readUnreadMessagesOfAConversation(
     conversation_id: number,
     user_id: number,

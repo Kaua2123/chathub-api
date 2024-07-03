@@ -6,6 +6,7 @@ import { UpdateMessageDto } from './dtos/update-message-dto';
 import { MessageNotFound } from './errors/message-not-found';
 import { Notification } from '../notifications/notification.model';
 import { User } from '../users/user.model';
+import { UserNotFound } from '../users/errors/user-not-found';
 
 @Injectable()
 export class MessagesService {
@@ -68,6 +69,45 @@ export class MessagesService {
     return unreadMessages;
   }
 
+  async hasUnreadMessagesInAGroup(
+    @Param('conversation_id') conversation_id: number,
+    @Param('users_id') ...users_id: number[]
+  ) {
+    const messages = await this.messageModel.findAll({
+      where: {
+        ConversationId: conversation_id,
+      },
+    });
+
+    if (!messages) throw new MessageNotFound();
+
+    const usersId = users_id[0]
+      .toString()
+      .replaceAll(',', '')
+      .replaceAll('[', '')
+      .replaceAll(']', '')
+      .split('');
+
+    const unreadMsgs = [];
+
+    for (let i = 0; i < usersId.length; i++) {
+      const filteredMessages = messages.filter(
+        (message) => !message.is_read_by.includes(usersId[i]),
+      );
+
+      unreadMsgs.push({
+        id: usersId[i],
+        unreadMessagesLength: filteredMessages.length,
+      });
+    }
+
+    // console.log('unreadMsgs: ', unreadMsgs);
+
+    if (!unreadMsgs) return [];
+
+    return unreadMsgs;
+  }
+
   async readAllUnreadMessagesOfAConversation(
     @Param('conversation_id') conversation_id: number,
     @Param('user_id') user_id: number,
@@ -77,6 +117,9 @@ export class MessagesService {
         ConversationId: conversation_id,
       },
     });
+
+    if (!user_id) throw new UserNotFound();
+    if (!messages) throw new MessageNotFound();
 
     messages.map(async (message) => {
       const replaced = message.is_read_by.replaceAll('"', '');
@@ -93,8 +136,6 @@ export class MessagesService {
         is_read_by: read_by_string,
       });
     });
-
-    if (!messages) throw new MessageNotFound();
 
     return messages;
   }
