@@ -93,19 +93,25 @@ export class SocketGateway
 
   @SubscribeMessage('unreadMsgsInGroup')
   handleUnreadMsgsInGroup(socket: Socket, payload: any[]) {
-    console.log('payload: ', payload);
-
     payload[1].map((element) => {
-      if (element.socketId)
-        socket.broadcast
-          .to(element.socketId)
-          .emit('unreadMsgsCounterInGroup', payload, socket.id);
+      socket.broadcast
+        .to(element.socketId)
+        .emit('unreadMsgsCounterInGroup', payload, socket.id);
     });
   }
 
   @SubscribeMessage('lastMsg')
   handleLastMsg(socket: Socket, payload) {
-    this.server.to(payload[1]).emit('newLastMsg', payload, socket.id);
+    this.server.to(payload[2]).emit('newLastMsg', payload, socket.id);
+  }
+
+  @SubscribeMessage('lastMsgInGroup')
+  handleLastMsgInGroup(socket: Socket, payload) {
+    payload[2].map((element) => {
+      socket.broadcast
+        .to(element.socketId)
+        .emit('newLastMsgInGroup', payload, socket.id);
+    });
   }
 
   afterInit() {
