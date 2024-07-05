@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConversationsRepository } from './conversations-repository';
 import { Conversation } from '../conversation.model';
 import { ConversationsService } from '../conversations.service';
+import { UpdateNameDto } from '../dto/UpdateNameDto';
 
 @Injectable()
 export class ConversationServiceRepository implements ConversationsRepository {
@@ -40,6 +41,16 @@ export class ConversationServiceRepository implements ConversationsRepository {
     user_invited_id: number,
   ): Promise<{ message: string; conversation: Conversation }> {
     return this.conversationsService.create(user_creator_id, user_invited_id);
+  }
+
+  async updateNameFromConversation(
+    conversation_id: number,
+    updateNameDto: UpdateNameDto,
+  ): Promise<Conversation> {
+    return this.conversationsService.updateNameFromConversation(
+      conversation_id,
+      updateNameDto,
+    );
   }
 
   async delete(id: number): Promise<void> {

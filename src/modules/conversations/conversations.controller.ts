@@ -1,5 +1,14 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ConversationsRepository } from './repositories/conversations-repository';
+import { UpdateNameDto } from './dto/UpdateNameDto';
 
 @Controller('/conversation')
 export class ConversationsController {
@@ -50,6 +59,17 @@ export class ConversationsController {
     return this.conversationsRepository.removeUsersFromConversation(
       conversation_id,
       ...users_id,
+    );
+  }
+
+  @Put('/updateName/:conversation_id')
+  async updateNameFromConversation(
+    @Param('conversation_id') conversation_id: number,
+    @Body() updateNameDto: UpdateNameDto,
+  ) {
+    return this.conversationsRepository.updateNameFromConversation(
+      conversation_id,
+      updateNameDto,
     );
   }
 

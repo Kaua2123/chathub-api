@@ -1,4 +1,5 @@
 import { Conversation } from '../conversation.model';
+import { UpdateNameDto } from '../dto/UpdateNameDto';
 
 export abstract class ConversationsRepository {
   abstract getUserConversations(id: number): Promise<Conversation>;
@@ -27,6 +28,11 @@ export abstract class ConversationsRepository {
     message: string;
     conversation: Conversation;
   }>;
+
+  abstract updateNameFromConversation(
+    conversation_id: number,
+    updateNameDto: UpdateNameDto,
+  ): Promise<Conversation>;
 
   abstract delete(id: number): Promise<void>;
 }

@@ -3,7 +3,7 @@ import {
   CONVERSATION_REPOSITORY,
   USERS_REPOSITORY,
 } from 'src/constants';
-import { Inject, Injectable, Param } from '@nestjs/common';
+import { Body, Inject, Injectable, Param } from '@nestjs/common';
 import { User } from '../users/user.model';
 import { Conversation } from './conversation.model';
 import { BlockedUsers } from '../blocked-users/blocked-users.model';
@@ -15,6 +15,7 @@ import { UserNotFound } from '../users/errors/user-not-found';
 import { CannotCreateAConversationWithYourself } from './errors/cannot-create-a-conversation-with-yourself';
 import { ConversationAlreadyExists } from './errors/conversation-already-exists';
 import { UserAlreadyInConversation } from './errors/user-already-in-conversation';
+import { UpdateNameDto } from './dto/UpdateNameDto';
 
 @Injectable()
 export class ConversationsService {
@@ -214,6 +215,22 @@ export class ConversationsService {
       message: `Usuários removidos: ${users.map((user) => user.username)}`,
       conversation,
     };
+  }
+
+  async updateNameFromConversation(
+    @Param('id') id: number,
+    @Body() updateNameDto: UpdateNameDto,
+  ) {
+    const { name } = updateNameDto;
+    const conversation = await this.conversationModel.findByPk(id);
+
+    if (!conversation) throw new ConversationNotFound();
+
+    const updatedConversation = await conversation.update({
+      name,
+    });
+
+    return updatedConversation;
   }
 
   async delete(@Param('id') id: number) {
