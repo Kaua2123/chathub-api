@@ -57,7 +57,7 @@ export class ConversationsService {
       include: [
         {
           model: User,
-          attributes: ['id', 'username', 'image'],
+          attributes: ['id', 'username', 'image', 'image_url'],
         },
       ],
       where: {
