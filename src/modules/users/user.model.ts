@@ -39,7 +39,12 @@ export class User extends Model {
   @Column
   image: string;
 
-  @Column(DataType.VIRTUAL)
+  @Column({
+    type: DataType.VIRTUAL,
+    get(this: User): string | null {
+      return `http://localhost:3000/images/${this.getDataValue('image')}`;
+    },
+  })
   image_url: string;
 
   @AllowNull(false)
