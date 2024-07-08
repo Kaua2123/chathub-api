@@ -110,8 +110,6 @@ export class MessagesService {
       });
     }
 
-    // console.log('unreadMsgs: ', unreadMsgs);
-
     if (!unreadMsgs) return [];
 
     return unreadMsgs;
@@ -161,11 +159,6 @@ export class MessagesService {
     const { content, is_sender, is_read_by, username, ConversationId, UserId } =
       createMessageDto;
 
-    // posso buscar uma conversa com esse mesmo conversationId
-    // checar os ids de participantes
-    // checar se um bloqueou o outro, ou vice-versa
-    // MÃO NA MASSA!
-
     const currentConversation =
       await this.conversationModel.findByPk(ConversationId);
 
@@ -189,7 +182,7 @@ export class MessagesService {
             ],
           },
         });
-
+ // da pra enxe
         return blockedUser;
       },
     );

@@ -117,7 +117,7 @@ export class ConversationsService {
 
     if (hasConversation) throw new ConversationAlreadyExists();
 
-    const participantsArray = [user_creator.username, user_invited.username];
+    const participantsArray = [user_creator.id, user_invited.id];
 
     const conversation = await this.conversationModel.create({
       creator_id: user_creator_id,
@@ -154,11 +154,34 @@ export class ConversationsService {
     const conversationParticipantsArray = replaced.split(',');
 
     users.map((user) => {
+      const isBlockedUser = conversationParticipantsArray.map(
+        async (participantId) => {
+          const blockedUser = await this.blockedUserModel.findOne({
+            where: {
+              [Op.or]: [
+                {
+                  UserId: participantId,
+                  user_who_blocked_id: user.id,
+                },
+                {
+                  UserId: user.id,
+                  user_who_blocked_id: participantId,
+                },
+              ],
+            },
+          });
+
+          return blockedUser;
+        },
+      );
+
+      if (isBlockedUser) throw new NotAllowed();
+
       if (conversationParticipantsArray.includes(user.username)) {
         throw new UserAlreadyInConversation();
       }
 
-      conversationParticipantsArray.push(user.username);
+      conversationParticipantsArray.push(user.id.toString());
     });
 
     const conversationParticipantsString =
