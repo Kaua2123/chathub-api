@@ -16,6 +16,18 @@ export class BlockedUsersService {
     private readonly userModel: typeof User,
   ) {}
 
+  async index(@Param('id') user_id: number) {
+    const blockedUsers = await this.blockedUserModel.findAll({
+      where: { user_who_blocked_id: user_id },
+      include: {
+        model: User,
+        attributes: ['id', 'username', 'image', 'image_url'],
+      },
+    });
+
+    return blockedUsers;
+  }
+
   async blockUserById(
     @Param('id') id: number,
     @Body() blockUserDto: BlockUserDto,

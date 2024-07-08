@@ -8,6 +8,10 @@ import { BlockedUsersRepository } from './blocked-users-repository';
 export class BlockedUsersServiceRepository implements BlockedUsersRepository {
   constructor(private readonly blockedUsersService: BlockedUsersService) {}
 
+  index(user_id: number): Promise<BlockedUsers[]> {
+    return this.blockedUsersService.index(user_id);
+  }
+
   async blockUserById(
     id: number,
     blockUserDto: BlockUserDto,

@@ -1,20 +1,29 @@
 import { Body, Inject, Injectable, Param } from '@nestjs/common';
-import { MESSAGES_REPOSITORY, NOTIFICATIONS_REPOSITORY } from 'src/constants';
+import {
+  BLOCKED_USERS_REPOSITORY,
+  CONVERSATION_REPOSITORY,
+  MESSAGES_REPOSITORY,
+} from 'src/constants';
 import { Message } from './message.model';
 import { CreateMessageDto } from './dtos/create-message-dto';
 import { UpdateMessageDto } from './dtos/update-message-dto';
 import { MessageNotFound } from './errors/message-not-found';
-import { Notification } from '../notifications/notification.model';
 import { User } from '../users/user.model';
 import { UserNotFound } from '../users/errors/user-not-found';
+import { Conversation } from '../conversations/conversation.model';
+import { BlockedUsers } from '../blocked-users/blocked-users.model';
+import { Op } from 'sequelize';
+import { NotAllowed } from '../blocked-users/errors/not-allowed';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @Inject(MESSAGES_REPOSITORY)
     private messageModel: typeof Message,
-    @Inject(NOTIFICATIONS_REPOSITORY)
-    private notificationModel: typeof Notification,
+    @Inject(BLOCKED_USERS_REPOSITORY)
+    private blockedUserModel: typeof BlockedUsers,
+    @Inject(CONVERSATION_REPOSITORY)
+    private conversationModel: typeof Conversation,
   ) {}
 
   async getMessagesOfAConversation(@Param('id') id: number) {
@@ -151,6 +160,41 @@ export class MessagesService {
   async create(@Body() createMessageDto: CreateMessageDto) {
     const { content, is_sender, is_read_by, username, ConversationId, UserId } =
       createMessageDto;
+
+    // posso buscar uma conversa com esse mesmo conversationId
+    // checar os ids de participantes
+    // checar se um bloqueou o outro, ou vice-versa
+    // MÃO NA MASSA!
+
+    const currentConversation =
+      await this.conversationModel.findByPk(ConversationId);
+
+    const conversationParticipantsArray = currentConversation.participants
+      .replaceAll('"', '')
+      .split(',');
+
+    const isBlockedUser = conversationParticipantsArray.map(
+      async (participantId) => {
+        const blockedUser = await this.blockedUserModel.findOne({
+          where: {
+            [Op.or]: [
+              {
+                UserId: UserId,
+                user_who_blocked_id: participantId,
+              },
+              {
+                UserId: participantId,
+                user_who_blocked_id: UserId,
+              },
+            ],
+          },
+        });
+
+        return blockedUser;
+      },
+    );
+
+    if (isBlockedUser) throw new NotAllowed();
 
     const message = await this.messageModel.create({
       content,

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { BlockUserDto } from './dto/block-user-dto';
 import { BlockedUsersRepository } from './repositories/blocked-users-repository';
 
@@ -7,6 +7,11 @@ export class BlockedUsersController {
   constructor(
     private readonly blockedUsersRepository: BlockedUsersRepository,
   ) {}
+
+  @Get('/:id')
+  async index(@Param('id') user_id: number) {
+    return this.blockedUsersRepository.index(user_id);
+  }
 
   @Post('/blockUser/:id')
   async blockUserById(
