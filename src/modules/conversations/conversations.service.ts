@@ -138,6 +138,7 @@ export class ConversationsService {
 
   async addMoreUsersToConversation(
     @Param('conversation_id') conversation_id: number,
+    @Param('user_id') user_id: number,
     @Param('users_id') ...users_id: number[]
   ) {
     const conversation = await this.conversationModel.findByPk(conversation_id);
@@ -153,36 +154,35 @@ export class ConversationsService {
     const replaced = conversation.participants.replaceAll('"', '');
     const conversationParticipantsArray = replaced.split(',');
 
-    users.map((user) => {
-      const isBlockedUser = conversationParticipantsArray.map(
-        async (participantId) => {
-          const blockedUser = await this.blockedUserModel.findOne({
-            where: {
-              [Op.or]: [
-                {
-                  UserId: participantId,
-                  user_who_blocked_id: user.id,
-                },
-                {
-                  UserId: user.id,
-                  user_who_blocked_id: participantId,
-                },
-              ],
-            },
-          });
-
-          return blockedUser;
-        },
-      );
-
-      if (isBlockedUser) throw new NotAllowed();
-
+    users.map(async (user) => {
       if (conversationParticipantsArray.includes(user.username)) {
         throw new UserAlreadyInConversation();
       }
 
       conversationParticipantsArray.push(user.id.toString());
     });
+
+    const blockedUsersPromise = users.map(async (user) => {
+      const blockedUser = await this.blockedUserModel.findOne({
+        where: {
+          [Op.or]: [
+            {
+              UserId: user.id,
+              user_who_blocked_id: user_id,
+            },
+            {
+              UserId: user_id,
+              user_who_blocked_id: user.id,
+            },
+          ],
+        },
+      });
+
+      if (blockedUser) throw new NotAllowed();
+      return blockedUser;
+    });
+
+    await Promise.all(blockedUsersPromise);
 
     const conversationParticipantsString =
       conversationParticipantsArray.toString();

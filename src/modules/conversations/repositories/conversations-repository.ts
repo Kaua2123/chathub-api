@@ -15,6 +15,7 @@ export abstract class ConversationsRepository {
 
   abstract addMoreUsersToConversation(
     conversation_id: number,
+    user_id: number,
     ...users_id: number[]
   ): Promise<{
     message: string;

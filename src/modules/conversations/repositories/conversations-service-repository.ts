@@ -18,10 +18,12 @@ export class ConversationServiceRepository implements ConversationsRepository {
 
   async addMoreUsersToConversation(
     conversation_id: number,
+    user_id: number,
     ...users_id: number[]
   ): Promise<{ message: string; conversation: Conversation }> {
     return this.conversationsService.addMoreUsersToConversation(
       conversation_id,
+      user_id,
       ...users_id,
     );
   }

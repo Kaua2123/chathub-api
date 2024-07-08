@@ -40,13 +40,15 @@ export class ConversationsController {
     );
   }
 
-  @Post('/addMoreUsersToConversation/:conversation_id/:users_id')
+  @Post('/addMoreUsersToConversation/:conversation_id/:user_id/:users_id')
   async addMoreUsersToConversation(
     @Param('conversation_id') conversation_id: number,
+    @Param('user_id') user_id: number,
     @Param('users_id') users_id: number[],
   ) {
     return this.conversationsRepository.addMoreUsersToConversation(
       conversation_id,
+      user_id,
       ...users_id,
     );
   }

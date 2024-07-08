@@ -166,7 +166,7 @@ export class MessagesService {
       .replaceAll('"', '')
       .split(',');
 
-    const isBlockedUser = conversationParticipantsArray.map(
+    const blockedUserPromises = conversationParticipantsArray.map(
       async (participantId) => {
         const blockedUser = await this.blockedUserModel.findOne({
           where: {
@@ -182,12 +182,13 @@ export class MessagesService {
             ],
           },
         });
- // da pra enxe
+
+        if (blockedUser) throw new NotAllowed();
         return blockedUser;
       },
     );
 
-    if (isBlockedUser) throw new NotAllowed();
+    await Promise.all(blockedUserPromises);
 
     const message = await this.messageModel.create({
       content,
