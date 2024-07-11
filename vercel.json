@@ -2,15 +2,51 @@
     "version": 2,
     "builds": [
       {
-        "src": "dist/src/main.js",
+        "src": "src/main.ts",
         "use": "@vercel/node"
       }
     ],
     "routes": [
       {
+        "src": "/modules/auth/(.*)",
+        "dest": "src/modules/auth/auth.controller.ts"
+      },
+      {
+        "src": "/modules/blocked-users/(.*)",
+        "dest": "src/modules/blocked-users/blocked-users.controller.ts"
+      },
+      {
+        "src": "/modules/conversations/(.*)",
+        "dest": "src/modules/conversations/conversations.controller.ts"
+      },
+      {
+        "src": "/modules/friend-requests/(.*)",
+        "dest": "src/modules/friend-requests/friend-requests.controller.ts"
+      },
+      {
+        "src": "/modules/friends/(.*)",
+        "dest": "src/modules/friends/friends.controller.ts"
+      },
+      {
+        "src": "/modules/images/(.*)",
+        "dest": "src/modules/images/images.controller.ts"
+      },
+      {
+        "src": "/modules/messages/(.*)",
+        "dest": "src/modules/messages/messages.controller.ts"
+      },
+      {
+        "src": "/modules/notifications/(.*)",
+        "dest": "src/modules/notifications/notifications.controller.ts"
+      },
+      {
+        "src": "/modules/users/(.*)",
+        "dest": "src/modules/users/users.controller.ts"
+      },
+      {
         "src": "/(.*)",
-        "dest": "dist/src/main.js",
-        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
+        "dest": "src/main.ts"
       }
     ]
   }
+  
